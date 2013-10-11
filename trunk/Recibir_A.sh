@@ -32,7 +32,7 @@ do
 			correo=`echo $archivo | cut -d "-" -f 2`
 			if [ `expr $id % 2` -eq 0 ]
 			then
-				ID_CORREO_VALIDOS_SALA=`grep -c "^$id;[^;]*;[^;]*;[^;]*;[^;]*;$correo$" $RUTA_SALAS`
+				ID_CORREO_VALIDOS_SALA=`grep -c "^$id;[^;]*;[^;]*;[^;]*;[^;]*;$correo" $RUTA_SALAS`
 				if [ $ID_CORREO_VALIDOS_SALA -eq 1 ]
 				then
 					perl Mover_A.pl $RUTA_ARCHIVO $ACEPDIR Recibir_A
@@ -43,8 +43,8 @@ do
 				fi
 			elif [ `expr $id % 2` -eq 1 ]
 			then
-				ID_CORREO_VALIDOS_OBRA1=`grep -c "^$id;[^;]*;[^;]*;$correo$" $RUTA_OBRAS`
-				ID_CORREO_VALIDOS_OBRA2=`grep -c "^$id;[^;]*;$correo;[^;]*$" $RUTA_OBRAS`
+				ID_CORREO_VALIDOS_OBRA1=`grep -c "^$id;[^;]*;[^;]*;$correo" $RUTA_OBRAS`
+				ID_CORREO_VALIDOS_OBRA2=`grep -c "^$id;[^;]*;$correo;[^;]*" $RUTA_OBRAS`
 				if [[ $ID_CORREO_VALIDOS_OBRA1 -eq 1 || $ID_CORREO_VALIDOS_OBRA2 -eq 1 ]]
 				then
 					perl Mover_A.pl $RUTA_ARCHIVO $ACEPDIR Recibir_A
