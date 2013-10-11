@@ -111,6 +111,7 @@ sub leerOpciones{
 }
 sub imprimirAyuda {
 	print 'Ayuda'."\n";
+	
 }
 
 sub existeReferenciaUsuario{
@@ -186,9 +187,11 @@ sub procesarOpcionDeUsuario{
 				
 			}			
 						
-		}		
-		$imprimir = "Reservas confirmadas $refanterior.\n Cantidad: $butacas Total: $hashRef{$refanterior} \n";
-		imprimirAArchivo($imprimir);	
+		}
+		if ($hashRef{$refanterior} ne ""){	
+			$imprimir = "Reservas confirmadas $refanterior.\n Cantidad: $butacas Total: $hashRef{$refanterior} \n";
+			imprimirAArchivo($imprimir);	
+		}
 		close(RESERVAS);
 			
 	}
@@ -227,7 +230,7 @@ sub recorrerListaInvitados{
 }    
 		
 
-sub evaluarOpcionUsuario{
+sub evaluarOpcionUsuarioListado{
 		$imprimir = "Elja una opcion: ";
 		imprimirAPantalla($imprimir);
 		$opcion = <STDIN>;
@@ -238,7 +241,7 @@ sub evaluarOpcionUsuario{
 		if( $opcion > $#listaOpciones or $opcion < 0 and $opcion ne "-s"){		
 				$imprimir = "A ingresado mal la opcion -s para salir\n ";
 				imprimirAPantalla($imprimir);
-				&evaluarOpcionUsuario();			
+				&evaluarOpcionUsuarioListado();			
 		}
 }
 
@@ -286,7 +289,7 @@ sub imprimirInvitados{
 	$impresora->($linea);
 	$imprimir = "Se listan los eventos candidatos\n";
 	$result = &generarListaEventos();
-	&evaluarOpcionUsuario();	
+	&evaluarOpcionUsuarioListado();	
 	
 	$result = &procesarOpcionDeUsuario();
 	
@@ -307,21 +310,143 @@ sub startArchivoInvitados{
 	
 }
 
+sub evaluarOpcionUsuarioDisponibilidad{
+	$imprimir = "Ingrese una opcion:\n 1-Id Obra\n 2-Id Sala\n 3-Rango Id Obra\n 4-Rango Id Sala\n";
+	&imprimirAPantalla($imprimir);
+	$imprimir = "Opcion: ";
+	&imprimirAPantalla($imprimir);
+	$opcion = <STDIN>;
+	chomp($opcion);
+	if( $opcion > 4 or $opcion <= 0){		
+			$imprimir = "Opcion incorrecta..\n";
+			&imprimirAPantalla($imprimir);
+			&evaluarOpcionUsuarioDisponibilidad();			
+	}	
+}
+
+sub procesarOpcionUsuario{	
+	
+	if( $opcion == 1 ){
+		$imprimir = "Ingrese ID Obra:\n";
+	}
+	if( $opcion == 2 ){
+		$imprimir = "Ingrese Id de sala:\n";
+		$i = 1;
+	}
+	if( $opcion == 3 ){
+		$imprimir = "Ingrese Rango id obra separado de '-': \n";
+		$i = 2;
+	}
+	if( $opcion == 4 ){
+		$imprimir = "Ingrese id de sala separado de '-':\n";
+		$i = 3;
+	}
+	&imprimirAPantalla($imprimir);
+	$opcion2 = <STDIN>;
+	
+	chomp($opcion2);
+	$listaOpcionD[$i]=$opcion;
+	if($opcion == 4 or $opcion == 3){
+		@rango = split("-",$opcion2);
+		if($#rango != 1){
+			$imprimir = "Ingreso  mal la separacion en el rango\n";
+			&imprimirAPantalla($imprimir);
+			&procesarOpcionUsuario();
+		}
+	}	
+}
+
+
+sub recorrerArchivoCombosSegunOpcion{	
+	
+	if( $opcion == 1){
+		if($data[1] == $opcion2){
+			$entro = 1;
+			$imprimir = "$data[0]-$data[1]-$data[2]-$data[3]-$data[4]-$data[5]-$data[6]\n";
+			&imprimirAArchivo($imprimir);
+		}
+	}
+	if($opcion == 2){
+		if($data[4] == $opcion2){
+			$entro = 1;
+			$imprimir = "$data[0]-$data[1]-$data[2]-$data[3]-$data[4]-$data[5]-$data[6]\n";
+			&imprimirAArchivo($imprimir);
+		}	
+	}
+	if( $opcion == 3){
+		$max = $rango[1];
+		$min = $rango[0];
+		if($data[1] >= $min and $data[1] <= $max){
+			$entro = 1;
+			$imprimir = "$data[0]-$data[1]-$data[2]-$data[3]-$data[4]-$data[5]-$data[6]\n";
+			&imprimirAArchivo($imprimir);
+		}					
+	}
+	if($opcion == 4){
+		$max = chomp($rango[1]);
+		$min = chomp($rango[0]);
+		if($data[4] >= $min and $data[4] <= $max){
+			$entro = 1;
+			$imprimir = "$data[0]-$data[1]-$data[2]-$data[3]-$data[4]-$data[5]-$data[6]\n";
+			&imprimirAArchivo($imprimir);
+		}			
+	}
+	
+}
+sub leerArchivoCombos{
+	$entro = 0;
+	my ($result) = 0;
+
+	if(!open (COMBOS, "<$PROCDIR".'combos.dis')){
+		print "\booo";
+		$result = "Error al leer el archivo de reservas";
+		
+	} else {		
+		while ($linea=<COMBOS>){
+			
+			@data = split(";", $linea);
+			&recorrerArchivoCombosSegunOpcion();		
+		}
+	   
+	   close(COMBOS);	
+	}
+	if ($entro == 0 ){
+		$imprimir = "El parametro ingresado es erroneo ingreselo nuevamente:\n";
+		&imprimirAPantalla($imprimir);
+		&procesarOpcionUsuario();
+	}
+	$return = $result;
+}	
+	
 sub imprimirDisponibilidad{
-	#Recibe por parametro la funcion que realiza la impresion  
-	my($impresora) = @_;
-	my($linea) = "Disponibilidad"."\n";
+	
+		
+	&evaluarOpcionUsuarioDisponibilidad();
+	&procesarOpcionUsuario();
 	if( $aArchivo ){
 	   startArchivoDisponibilidad();
 	}
-	$impresora->($linea);
+	$result = &leerArchivoCombos();
+	
+	
   	if( $aArchivo ){
 	   cerrarArchivo();
 	} 
+	$retun = $result;
+	
 }
 
 sub startArchivoDisponibilidad{
-	print "Abre Archivo disponibilidad"."\n";
+	$imprimir = "Ingrese nombre de archivo para imprimir listado\n";
+	&imprimirAPantalla($imprimir);
+	$nombre = <STDIN>;
+	chomp($nombre);
+	$direccion = "$REPODIR$nombre.dis";
+	if ( not open (ARCHIVO,">$direccion") ){
+				print "Error al abrir en modo escritura $direccion";
+				exit 1;
+	}	
+	
 }
 
 sub imprimirRanking{
@@ -418,6 +543,7 @@ sub leerReservas{
 	my($result) = 0;
 	if(!open (RESERVAS, "<$PROCDIR".'reservas.ok')){
 		$result = "Error al leer el archivo de reservas";
+		exit 1;
 	} else {
 		while ($linea=<RESERVAS>){
 			@data = split(";", $linea);		
@@ -426,7 +552,7 @@ sub leerReservas{
 	    close(RESERVAS);
 	}
 	
-	$return = $result;
+	
 }
 sub imprimirTickets{
 	#Recibe por parametro la funcion que realiza la impresion  
@@ -450,14 +576,16 @@ sub imprimirAArchivo{
 	#ACA SE HACE REFERENCIA AL MANEJADOR.
 	print ARCHIVO $linea;
         #Imprime por pantalla tambien
-	imprimirAPantalla($linea);
+	imprimirAPantalla($linea);   
 }
 
 sub imprimirAPantalla{
 	my($linea) = @_;
 	#sale por standard
+	#print "Imprime Pantalla\n";
 	print "$linea";
 }
+
 
 #Abre un archivo y si no existe lo crea
 sub abrirArchivoCrear{
