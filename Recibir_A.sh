@@ -6,7 +6,7 @@ MAEDIR="/home/joel/Documentos/Sistemas_Operativos/maestros/"
 DEMONIO_RUTA="/home/joel/Documentos/Sistemas_Operativos/demonio.sh"
 ARCHIVO_SALAS="salas.mae"
 ARCHIVO_OBRAS="obras.mae"
-RUTA_RESERVAR="/home/joel/TP-SO/Reservar.sh"
+RUTA_RESERVAR="/home/joel/TP-SO/Reservar_A.sh"
 RUTA_SALAS="$MAEDIR$ARCHIVO_SALAS"
 RUTA_OBRAS="$MAEDIR$ARCHIVO_OBRAS"
 NUMERO_DE_CICLO=1
@@ -71,6 +71,10 @@ do
 		if [ "$PID_RESERVAR" == "" ]
 		then
 			$RUTA_RESERVAR & > /dev/null
+			if [ "$PID_RESERVAR" == "" ] #quiero ver si se inicio el Reservar_A.sh o no. No se si tengo que repetir la linea de asignacion de PID_RESERVAR.
+			then
+				echo " No se ha podido inciar el proceso de Reservas "
+			fi
 		fi
  	fi	
 sleep $TIEMPO
