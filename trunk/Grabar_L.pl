@@ -7,7 +7,7 @@
 
 $LOGEXT="log";
 $LOGDIR="/home/nicolas/SistemasOperativos/Practica/a/qq";
-$CONFDIR="/home/nicolas/SistemasOperativos/Practica/a";
+$CONFDIR="/home/nicolas/SistemasOperativos/Practica/a"; # no es una variable ambiente es $grupo/conf
 $LOGSIZE="1"; #representado en Kb
 
 #$LOGEXT = $ENV{'LOGEXT'};
@@ -110,7 +110,7 @@ sub modoEscritura{
 
 sub verificarParametros{
 	
-	if ($comando eq "instalar"){		
+	if ($comando eq "Instalar_tp"){		
 		$direccion = "$CONFDIR"."/"."Instalar_tp.log";		
  	}
 	else{
