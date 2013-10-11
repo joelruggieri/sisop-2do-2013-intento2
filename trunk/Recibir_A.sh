@@ -72,6 +72,7 @@ do
 		if [ "$PID_RESERVAR" == "" ]
 		then
 			$RUTA_RESERVAR & > /dev/null
+			PID_RESERVAR=$(ps -o pid -C Reservar_A.sh | sed "2q;d")
 			if [ "$PID_RESERVAR" == "" ] #quiero ver si se inicio el Reservar_A.sh o no. No se si tengo que repetir la linea de asignacion de PID_RESERVAR.
 			then
 				echo " No se ha podido inciar el proceso de Reservas "
