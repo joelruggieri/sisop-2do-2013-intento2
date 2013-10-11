@@ -1,3 +1,4 @@
+#!/bin/bash
 ARRIDIR="/home/joel/Documentos/Sistemas_Operativos/arribos/"
 ACEPDIR="/home/joel/Documentos/Sistemas_Operartivos/aceptados"
 REPODIR="/home/joel/Documentos/Sistemas_Operativos/repositorio"
