@@ -116,7 +116,7 @@ sub imprimirAyuda {
 
 sub existeReferenciaUsuario{
 	my ($ref) = @_;
-	my ($dir) = "$PROCDIR"."$ref".".inv";
+	my ($dir) = "$REPODIR"."$ref".".inv";
 	
 	if (  $ref eq "" or not -e $dir or -z $dir ){
 		$return = 0;
@@ -201,7 +201,7 @@ sub procesarOpcionDeUsuario{
 	
 sub recorrerListaInvitados{
 	my ($ref) = @_;
-	my ($dir) = "$PROCDIR"."$ref".".inv";	
+	my ($dir) = "$REPODIR"."$ref".".inv";	
 	$totalacumulado = $hashRef{$ref};	
 	if(!open (REFERENCIA, "<$dir")){
 		$result = "Error al leer el archivo de reservas";
@@ -348,6 +348,7 @@ sub procesarOpcionUsuario{
 	$listaOpcionD[$i]=$opcion;
 	if($opcion == 4 or $opcion == 3){
 		@rango = split("-",$opcion2);
+		print "@rango";
 		if($#rango != 1){
 			$imprimir = "Ingreso  mal la separacion en el rango\n";
 			&imprimirAPantalla($imprimir);
@@ -383,8 +384,8 @@ sub recorrerArchivoCombosSegunOpcion{
 		}					
 	}
 	if($opcion == 4){
-		$max = chomp($rango[1]);
-		$min = chomp($rango[0]);
+		$max = $rango[1];
+		$min = $rango[0];
 		if($data[4] >= $min and $data[4] <= $max){
 			$entro = 1;
 			$imprimir = "$data[0]-$data[1]-$data[2]-$data[3]-$data[4]-$data[5]-$data[6]\n";
