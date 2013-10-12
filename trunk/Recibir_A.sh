@@ -23,6 +23,8 @@ do
 		INVITADOS_BIEN_FORMADO=` echo $archivo | grep -c '^[^- ]*\.inv$'`
 		RESERVA_BIEN_FORMADO=`echo $archivo | grep -c '^[0-9]\+-[^-]*-[^- ]*$'`
 		TIPO_TEXTO=`echo $TIPO_DE_TEXTO | grep -c 'text'`
+		LANG_GUARDAR=$LANG
+		LANG=C
 		if [[ $TIPO_TEXTO -eq 0 || ($RESERVA_BIEN_FORMADO -eq 0 && $INVITADOS_BIEN_FORMADO -eq 0) ]] 
 		then
 			perl Mover_A.pl $RUTA_ARCHIVO $RECHDIR Recibir_A
