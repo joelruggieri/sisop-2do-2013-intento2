@@ -6,9 +6,13 @@ use Data::Dumper;
 #$REPODIR= $ENV{'REPODIR'};
 #$PROCDIR = $ENV{'PROCDIR'};
 #$MAEDIR = $ENV{'MAEDIR'};
-$REPODIR= "/home/nicolas/SistemasOperativos/Practica/";
-$PROCDIR= "/home/nicolas/SistemasOperativos/Practica/";
+#$REPODIR= "/home/nicolas/SistemasOperativos/Practica/";
+#$PROCDIR= "/home/nicolas/SistemasOperativos/Practica/";
 #$MAEDIR= "/home/nicolas/SistemasOperativos/Practica/";
+
+$PROCDIR = "/home/maxi/Desktop/grupo_tres/procesados/";
+$REPODIR = "/home/maxi/Desktop/grupo_tres/repo/";
+
 
 
 &main();
@@ -555,21 +559,107 @@ sub leerReservas{
 	
 	
 }
+
+sub obtenerComboID {
+	print "Ingrese el ID de un combo valido: \n";
+	$comboID = <STDIN>;
+	chomp($comboID);
+	my($encontrado)=0;
+	
+	open(COMBOS, "<$PROCDIR".'combos.dis') || die "Error: no se pudo abrir combos.dis";
+	@array = <COMBOS>;
+	
+	while (!$encontrado) {
+		# Asigna al arreglo todos los registros del archivo.
+		foreach (@array){
+			$i=index($_,"$comboID"); # busca el string “print”
+			if ($i > -1){
+				$encontrado = 1;
+			}
+		}
+		if (!$encontrado) {
+			print "No es un combo valido, vuela a ingresar:\n";
+			$comboID = <STDIN>;
+			chomp($comboID);
+		}
+	}
+	
+	$return = $comboID
+}
+
+sub procesarRegistroDelCombo {
+	my($registroCompleto, $impresora) = @_;
+	
+	#print "El registro completo es: $registroCompleto\n";
+	my(@data) = split(";", $registroCompleto);
+	my($cantButacas) = $data[6];
+	my($ticketsX1)=0;
+	my($ticketsX2)=0;
+	my($campoTickets)="";
+	my($nombreObra)=$data[1];
+	my($fechaFunc)=$data[2];
+	my($horaFunc)=$data[3];
+	my($nombreSala)=$data[5];
+	my($refInt)=$data[8];
+	my($correo)=$data[10];
+	my($registro)="";
+	
+	$cantButacas = $cantButacas - 2;
+	while ($cantButacas >= 0) {
+		$ticketsX2 = $ticketsX2 + 1;
+		$cantButacas = $cantButacas - 2;
+	}
+	
+	$ticketsX1 = $data[6] - 2 * $ticketsX2;
+	
+	$registro = "$nombreObra;"."$fechaFunc;"."$horaFunc;"."$nombreSala;"."$refInt;"."$correo;"."$registro";
+	
+	for ($i = 0; $i < $ticketsX2; $i++) {
+		$linea="VALE POR 2 ENTRADAS;"."$registro\n";
+		$impresora->($linea);
+	}
+	
+	for ($i = 0; $i < $ticketsX1; $i++) {
+		$linea="VALE POR 1 ENTRADA;"."$registro\n";
+		$impresora->($linea);
+	}
+}
+
+sub procesarRegistroCombo {
+	my($comboID, $impresora) = @_;
+
+	open(RESERVAS, "<$PROCDIR".'reservas.ok') || die "Error: no se pudo abrir reservas.ok";
+	@array = <RESERVAS>;
+	
+	# Asigna al arreglo todos los registros del archivo.
+	foreach (@array){
+		$i=index($_,"$comboID"); # busca el string “print”
+		if ($i > -1){
+			procesarRegistroDelCombo("$_", $impresora);
+		}
+	}
+}
+
 sub imprimirTickets{
 	#Recibe por parametro la funcion que realiza la impresion  
 	my($impresora) = @_;
-	my($linea) = "Tickets"."\n";
+	
+	my($comboID) = &obtenerComboID;
+	
 	if( $aArchivo ){
-	   startArchivoTickets();
+	   startArchivoTickets ($comboID);
 	}
-	$impresora->($linea);
+	
+	&procesarRegistroCombo ($comboID, $impresora);
+	
 	if( $aArchivo ){
 	   cerrarArchivo();
 	} 
 }
 
-sub startArchivoTickets{
-	print "Abre Archivo tickets"."\n";
+sub startArchivoTickets {
+	my($nombreArch) = @_;
+	abrirArchivoCrear("$REPODIR"."$nombreArch".".tck");
 }
 
 sub imprimirAArchivo{
