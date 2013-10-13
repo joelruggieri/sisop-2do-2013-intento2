@@ -19,29 +19,42 @@ function main {
 	exportarEntorno
 	ejecutarRecibirA
 	logFinal
+	if [[ $retorno -ne 0 ]]; then
+		perl Grabar_L.pl Iniciar_A I "El programa finalizó con errores."
+	else
+		perl Grabar_L.pl Iniciar_A I "El programa finalizó con éxito."
+	fi
+	perl Grabar_L.pl Iniciar_A I "Comando Iniciar_A Fin de Ejecución."
 	return 0
 }
 
 # Verifica si existe el fichero y tiene los permisos pasados por parametro
+# tipo: f = archivo || d = directorio
+# permisos: r = readable || w = writeable || x = executable
 function existeFicheroConPermisos { # $1: tipo de fichero (f o d), $2: fichero, $3: permiso1, $4: permiso2, ..., $n: permiso(n-2)
-	if [[ $retorno -ne 0 ]]; then return 1; fi
+	# a esta funcion no le importa si hubo un return 1
 	
-	if [ -$1 $2 ]; then
+	declare local tipo=""
+	if [ "$1" == "f" ]; then tipo="archivo"; fi
+	if [ "$1" == "d" ]; then tipo="directorio"; fi
+	
+	if [ -"$1" "$2" ]; then
 		for i in $@
 		do
-			if [[ ( $i != $1 ) && ( $i != $2 ) ]]; then
-				if [ -$i $2 ]; then
-					perl Grabar_L.pl Iniciar_A I "El archivo $2 tiene el permiso $i."
+			if [[ ( "$i" == "r" ) || ( "$i" == "w" ) || ( "$i" == "x" ) ]]; then
+				if [ -"$i" "$2" ]; then
+					perl Grabar_L.pl Iniciar_A I "El $tipo $2 tiene el permiso $i."
 				else
-					perl Grabar_L.pl Iniciar_A I "El archivo $2 no tiene el permiso $i , se lo agrega."
-					chmod +$i $2
+					perl Grabar_L.pl Iniciar_A I "El $tipo $2 no tiene el permiso $i , se lo agrega."
+					chmod +"$i" "$2"
 				fi
 			fi
 		done
 	else
-	   perl Grabar_L.pl Iniciar_A E "El archivo $2 es inexistente."
-	   retorno=1
-	   return 1
+		perl Grabar_L.pl Iniciar_A E "El $tipo $2 es inexistente."
+		perl Grabar_L.pl Iniciar_A E "Por favor, vuelva a instalar el sistema. Para mas informacion, consulte el README correspondiente."
+		retorno=1
+		return 1
 	fi
 	
 	return 0
@@ -69,7 +82,7 @@ function estaAmbienteInicializado {
 # Verifica la existencia de una variable
 function existeVariable { # $1: Nombre de variable
 	if [[ $retorno -ne 0 ]]; then return 1; fi
-	if [[ ${$1:-no existe} != "no existe" ]]; then
+	if [[ -z "$1" ]]; then
 		perl Grabar_L.pl Iniciar_A E "Ambiente ya inicializado. Si quiere reiniciar, termine su sesión e ingrese nuevamente."
 		retorno=1
 		return 1
@@ -108,7 +121,7 @@ function conseguirVariable { # $1: Variable
 		retorno=1
 		return 1
 	fi
-	eval "$1=$vSalida"
+	eval "$1=\"$vSalida\""
 	return 0
 }
 
@@ -117,9 +130,9 @@ function conseguirVariable { # $1: Variable
 function realizarValidaciones {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	existenDirectorios
-	existeFicheroConPermisos f "$MAEDIR/salas.mae" r
-	existeFicheroConPermisos f "$MAEDIR/obras.mae" r
-	existeFicheroConPermisos f "$PROCDIR/combos.dis" r
+	existeFicheroConPermisos f "$GRUPO/$MAEDIR/salas.mae" r
+	existeFicheroConPermisos f "$GRUPO/$MAEDIR/obras.mae" r
+	existeFicheroConPermisos f "$GRUPO/$PROCDIR/combos.dis" r
 	estanComandosInstalados
 	return 0
 }
@@ -127,16 +140,16 @@ function realizarValidaciones {
 # Verifica que existan los directorios del sistema y que tengan los permisos adecuados
 function existenDirectorios {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
-	existeFicheroConPermisos d $GRUPO r w x
-	existeFicheroConPermisos d $BINDIR r x
-	existeFicheroConPermisos d $CONFDIR r w x
-	existeFicheroConPermisos d $MAEDIR r w x
-	existeFicheroConPermisos d $ARRIDIR r w x
-	existeFicheroConPermisos d $ACEPDIR r w x
-	existeFicheroConPermisos d $RECHDIR r w x
-	existeFicheroConPermisos d $PROCDIR r w x
-	existeFicheroConPermisos d $REPODIR r w x
-	existeFicheroConPermisos d $LOGDIR r w x
+	existeFicheroConPermisos d "$GRUPO" r w x
+	existeFicheroConPermisos d "$GRUPO/$BINDIR" r x
+	existeFicheroConPermisos d "$GRUPO/$CONFDIR" r w x
+	existeFicheroConPermisos d "$GRUPO/$MAEDIR" r w x
+	existeFicheroConPermisos d "$GRUPO/$ARRIDIR" r w x
+	existeFicheroConPermisos d "$GRUPO/$ACEPDIR" r w x
+	existeFicheroConPermisos d "$GRUPO/$RECHDIR" r w x
+	existeFicheroConPermisos d "$GRUPO/$PROCDIR" r w x
+	existeFicheroConPermisos d "$GRUPO/$REPODIR" r w x
+	existeFicheroConPermisos d "$GRUPO/$LOGDIR" r w x
 	return 0
 }
 
@@ -145,18 +158,18 @@ function estanComandosInstalados {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	
 	# Ejecutables Shell Script
-	existeFicheroConPermisos f "$BINDIR/Instalar_TP.sh" x
-	existeFicheroConPermisos f "$BINDIR/Recibir_A.sh" x
-	existeFicheroConPermisos f "$BINDIR/Reservar_A.sh" x
-	existeFicheroConPermisos f "$BINDIR/Start_A.sh" x
-	existeFicheroConPermisos f "$BINDIR/Stop_A.sh" x
+	existeFicheroConPermisos f "$GRUPO/$BINDIR/Instalar_TP.sh" x
+	existeFicheroConPermisos f "$GRUPO/$BINDIR/Recibir_A.sh" x
+	existeFicheroConPermisos f "$GRUPO/$BINDIR/Reservar_A.sh" x
+	existeFicheroConPermisos f "$GRUPO/$BINDIR/Start_A.sh" x
+	existeFicheroConPermisos f "$GRUPO/$BINDIR/Stop_A.sh" x
 	
 	# Ejecutables PERL
-	existeFicheroConPermisos f "$BINDIR/diferenciaDias.pl" x
-	existeFicheroConPermisos f "$BINDIR/Grabar_L.pl" x
-	existeFicheroConPermisos f "$BINDIR/Imprimir_A.pl" x
-	existeFicheroConPermisos f "$BINDIR/Imprimir.pl" x
-	existeFicheroConPermisos f "$BINDIR/Mover_A.pl" x
+	existeFicheroConPermisos f "$GRUPO/$BINDIR/diferenciaDias.pl" x
+	existeFicheroConPermisos f "$GRUPO/$BINDIR/Grabar_L.pl" x
+	existeFicheroConPermisos f "$GRUPO/$BINDIR/Imprimir_A.pl" x
+	existeFicheroConPermisos f "$GRUPO/$BINDIR/Imprimir.pl" x
+	existeFicheroConPermisos f "$GRUPO/$BINDIR/Mover_A.pl" x
 	
 	return 0
 }
@@ -206,7 +219,7 @@ function ejecutarRecibirA {
 # Ejecuta Recibir_A
 function activarRecibir {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
-	Start_A Recibir_A.sh Iniciar_A I
+	Start_A.sh Recibir_A.sh Iniciar_A I
 	ID_Recibir_A=`ps -o pid -C Recibir_A.sh | grep '[0-9]$' | sed 's- \(..*\)-\1-'`
 	if [[ "$ID_Recibir_A" == "" ]]; then return 0; fi # un error aca no debe parar todo el Iniciar_A
 	demonioCorriendo=1
@@ -217,8 +230,8 @@ function activarRecibir {
 function comoDetenerRecibir {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	declare local mensaje="Para detener el demonio Recibir_A, ejecutar el comando 'Stop_A Recibir_A.sh' sin las comillas."
-	perl Grabar_L.pl Iniciar_A I $mensaje
-	echo $mensaje
+	perl Grabar_L.pl Iniciar_A I "$mensaje"
+	echo "$mensaje"
 	return 0
 }
 
@@ -226,8 +239,8 @@ function comoDetenerRecibir {
 function comoCorrerRecibir {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	declare local mensaje="Para correr el demonio Recibir_A, ejecutar el comando 'Start_A Recibir_A.sh' sin las comillas."
-	perl Grabar_L.pl Iniciar_A I $mensaje
-	echo $mensaje
+	perl Grabar_L.pl Iniciar_A I "$mensaje"
+	echo "$mensaje"
 	comoDetenerRecibir
 	return 0
 }
@@ -236,9 +249,12 @@ function comoCorrerRecibir {
 function listarArchivos { # $1: mensaje, $2: directorio
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	perl Grabar_L.pl Iniciar_A I "$1: $2"
-	declare local archivo=`ls "$2" -1`
-	perl Grabar_L.pl Iniciar_A I "Archivos:"
-	perl Grabar_L.pl Iniciar_A I "$archivo"
+	declare local archivo=`ls "$GRUPO/$2" -1`
+	perl Grabar_L.pl Iniciar_A I "	Archivos:"
+	for i in $archivo
+	do
+		perl Grabar_L.pl Iniciar_A I "		$i"
+	done
 	return 0
 }
 
