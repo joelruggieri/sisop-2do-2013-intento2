@@ -63,26 +63,26 @@ function existeFicheroConPermisos { # $1: tipo de fichero (f o d), $2: fichero, 
 # Verifica si el ambiente esta inicializado
 function estaAmbienteInicializado {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
-	existeVariable GRUPO
-	existeVariable BINDIR
-	existeVariable CONFDIR
-	existeVariable MAEDIR
-	existeVariable ARRIDIR
-	existeVariable DATASIZE
-	existeVariable ACEPDIR
-	existeVariable RECHDIR
-	existeVariable PROCDIR
-	existeVariable REPODIR
-	existeVariable LOGDIR
-	existeVariable LOGEXT
-	existeVariable LOGSIZE
+	existeVariable "$GRUPO"
+	existeVariable "$BINDIR"
+	existeVariable "$CONFDIR"
+	existeVariable "$MAEDIR"
+	existeVariable "$ARRIDIR"
+	existeVariable "$DATASIZE"
+	existeVariable "$ACEPDIR"
+	existeVariable "$RECHDIR"
+	existeVariable "$PROCDIR"
+	existeVariable "$REPODIR"
+	existeVariable "$LOGDIR"
+	existeVariable "$LOGEXT"
+	existeVariable "$LOGSIZE"
 	return 0
 }
 
 # Verifica la existencia de una variable
 function existeVariable { # $1: Nombre de variable
 	if [[ $retorno -ne 0 ]]; then return 1; fi
-	if [[ -z "$1" ]]; then
+	if [[ ${1:+existe} == "existe" ]]; then
 		perl Grabar_L.pl Iniciar_A E "Ambiente ya inicializado. Si quiere reiniciar, termine su sesión e ingrese nuevamente."
 		retorno=1
 		return 1
