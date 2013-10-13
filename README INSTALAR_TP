@@ -1,0 +1,4 @@
+El comando se invoca si ningun parametro.
+Durante la instalacion se definen los directorios del programa si este se instala por primera vez.
+Si se instalo el paquete previamente pero por alguna razon se daño el mismo, se instalan nuevamente esos archivos
+Deja asentado el proceso en la carpeta de configuracion.
