@@ -5,17 +5,21 @@
 
 
 
-$LOGEXT="log";
-$LOGDIR="/home/nicolas/SistemasOperativos/Practica/a/qq";
-$CONFDIR="/home/nicolas/SistemasOperativos/Practica/a"; # no es una variable ambiente es $grupo/conf
-$LOGSIZE="1"; #representado en Kb
+#~ $LOGEXT="log";
+#~ $LOGDIR="/home/nicolas/SistemasOperativos/Practica/a/qq";
+#~ $CONFDIR="/home/nicolas/SistemasOperativos/Practica/a"; # no es una variable ambiente es $grupo/conf
+#~ $LOGSIZE="1"; #representado en Kb
 
-#$LOGEXT = $ENV{'LOGEXT'};
-#$LOGDIR = $ENV{'LOGDIR'};
-#$CONFDIR = $ENV{'CONFDIR'};
-#$LOGSIZE = $ENV{'LOGSIZE'};
-
-
+$LOGEXT = $ENV{'LOGEXT'};
+$LOGDIR = $ENV{'LOGDIR'};
+$CONFDIR = "conf";
+$GRUPO = $ENV{'GRUPO'};
+if(defined $ENV{'LOGSIZE'}) {
+	$LOGSIZE = $ENV{'LOGSIZE'};
+} else {
+	$LOGSIZE="1"; #representado en Kb
+}
+$MAINDIR = $ENV{'MAINDIR'}; # para Instalar_TP e Iniciar_A previo a la definicion de GRUPO
 
 &main();
 
@@ -66,7 +70,7 @@ sub sizeLog{
 		exit 1;
 	}	
 	$sizeLog = -s SALIDA;   #en bytes
-	print "$sizeLog\n";	
+	# print "$sizeLog\n";	
 	close (SALIDA);	
 }
 
@@ -74,7 +78,7 @@ sub sizeLog{
 sub escribirLog{
 	
 	&sizeLog();
-	if ( $sizeLog > ($LOGSIZE*1000) and $comando ne "instalar"){
+	if ( $sizeLog > ($LOGSIZE*1000) and $comando ne "Instalar_TP" and $comando ne "Iniciar_A"){
 		#Si no es el de instalar y el tamanio supero el maximo se trunca
 		&truncarLog();
 		
@@ -86,7 +90,7 @@ sub escribirLog{
 			}
 			
 			$sizeLog = -s SALIDA;   #en bytes
-			print "$sizeLog\n";	
+			# print "$sizeLog\n";	
 			print SALIDA $escribir;
 
 			close (SALIDA);
@@ -111,14 +115,17 @@ sub modoEscritura{
 sub verificarParametros{
 	
 	if ($comando eq "Instalar_tp"){		
-		$direccion = "$CONFDIR"."/"."Instalar_tp.log";		
+		$direccion = "$MAINDIR"."/"."$CONFDIR"."/"."Instalar_TP.log";		
+ 	}
+ 	elsif ($comando eq "Iniciar_A"){		
+		$direccion = "$MAINDIR"."/"."$CONFDIR"."/"."Iniciar_A.log";		
  	}
 	else{
-		$direccion = "$LOGDIR"."/"."$comando"."."."$LOGEXT";
+		$direccion = "$GRUPO"."/"."$LOGDIR"."/"."$comando"."."."$LOGEXT";
 	}
 	
 	if( not -e $direccion){	
-		#sino existe creo el archivo
+		# si no existe creo el archivo
 		if ( not open (SALIDA,">>$direccion") ){
 				print "Error al abrir en modo escritura $direccion";
 				exit 1;
