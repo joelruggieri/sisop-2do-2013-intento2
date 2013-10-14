@@ -10,8 +10,10 @@ use Data::Dumper;
 #$PROCDIR= "/home/nicolas/SistemasOperativos/Practica/";
 #$MAEDIR= "/home/nicolas/SistemasOperativos/Practica/";
 
-$PROCDIR = "/home/maxi/Desktop/grupo_tres/procesados/";
-$REPODIR = "/home/maxi/Desktop/grupo_tres/repo/";
+#$PROCDIR = "/home/maxi/Desktop/grupo_tres/procesados/";
+#$REPODIR = "/home/maxi/Desktop/grupo_tres/repo/";
+$PROCDIR = "/home/administrador/Escritorio/sisop2/";
+$REPODIR = "/home/administrador/Escritorio/sisop2/";
 
 
 
@@ -526,14 +528,24 @@ sub generarReporteRanking{
 	#no esta muy bueno el uso de una variable local pero se mambeó cuand quise hacerla my.
 	my($impresora) = @_;
 	my(%hash);
+	my(%hashTitulo,%hashFecha,%hashNSala,%hashHora);
+	leerReservas_campos();
 	my($result) = leerReservas(\%hash);
 	if(!$result){
 			#print Dumper(\%hash);
-			foreach my $key ( keys %hash ) {
-			  #TODO FILTRAR LOS PRIMEROS 10, ORDENAR POR KEY Y OBTENER UN NUEVO MAPA DONDE LA CLAVE SEA EL MAIL Y EL VALOR LA CANTIDAD
-			  $impresora->("key: $key, value: $hash{$key}\n");
+			#Ordeno hash por valor (basado en ejemplo de: http://stackoverflow.com/questions/10901084/how-to-sort-perl-hash-on-values-and-order-the-keys-correspondingly-in-two-array)
+			my @ClavesOrdenadas = sort { $hash{$b} <=> $hash{$a} } keys(%hash);
+			my($long) = $#ClavesOrdenadas+1;
+			my($index)=0;
+			if ($long > 10){
+				#filtro las primeras 10
+				$long = 10;
 			}
 			
+			for ($index=0 ; $index<$long ; $index++){
+				my($key)=$ClavesOrdenadas[$index];
+				$impresora->("Titulo:$hashTitulo->{$key}, Nombre Sala:$hashNSala->{$key}, Fecha:$hashFecha->{$key}, Hora:$hashHora->{$key}, Cantidad entradas:$hash{$key}\n");
+			}
 	} else {
 	
 	}
@@ -552,14 +564,32 @@ sub leerReservas{
 	} else {
 		while ($linea=<RESERVAS>){
 			@data = split(";", $linea);		
-			$hash->{"$data[0]"} = $hash->{"$data[0]"} + $data[6];
+			#indexado por idpelicula,fecha,hora,idsala
+			$hash->{"$data[0]$data[2]$data[3]$data[4]"} = $hash->{"$data[0]$data[2]$data[3]$data[4]"} + $data[6];
 		}
 	    close(RESERVAS);
 	}
-	
+	$resultado=$result
 	
 }
-
+#Retorna un string con el error si hay, y carga el hash con los datos de las reservas.
+sub leerReservas_campos{
+	#print "<$PROCDIR".'reservas.ok\n';
+	my($result) = 0;
+	if(!open (RESERVAS, "<$PROCDIR".'reservas.ok')){
+		$result = "Error al leer el archivo de reservas";
+		exit 1;
+	} else {
+		while ($linea=<RESERVAS>){
+			@data = split(";", $linea);
+			$hashTitulo->{"$data[0]$data[2]$data[3]$data[4]"} = $data[1];
+			$hashFecha->{"$data[0]$data[2]$data[3]$data[4]"} = $data[2];
+			$hashNSala->{"$$data[0]$data[2]$data[3]$data[4]"} = $data[5];
+			$hashHora->{"$data[0]$data[2]$data[3]$data[4]"} = $data[3];	
+		}
+	    close(RESERVAS);
+	}	
+}
 sub obtenerComboID {
 	print "Ingrese el ID de un combo valido: \n";
 	$comboID = <STDIN>;
