@@ -13,6 +13,8 @@ function main {
 	declare local demonioCorriendo=0
 	declare local ID_Recibir_A=-1
 	
+	verificarLoguer
+	if [[ $retorno -ne 0 ]]; then return 1; fi
 	perl Grabar_L.pl Iniciar_A I "Comando Iniciar_A Inicio de Ejecución."
 	existeFicheroConPermisos f "$config" r
 	estaAmbienteInicializado
@@ -37,17 +39,30 @@ function rescatarDirectorioBase {
 	declare local encontrado=0
 
 	while [[ "$encontrado" == 0 ]]; do
-		cd ..
 		for directorios in `ls`; do
 			if [[ "$directorios" == "conf" ]]; then
 				encontrado=1 # Estoy en $grupo! (asumiendo que /conf existe en $grupo sin directorios intermedios
 				break
 			fi
 		done
+		if [[ "$encontrado" == 0 ]]; then cd ..; fi
 	done
 
 	directorioBase=`pwd`
 	cd "$directorioActual"
+	return 0
+}
+
+# Verificar existencia del Loguer
+function verificarLoguer {
+	if [[ $retorno -ne 0 ]]; then return 1; fi
+	
+	if [ ! -f "./Grabar_L.pl" ]; then
+		echo "Loguer 'Grabar_L.pl' inexistente."
+		echo "Por favor, vuelva a instalar el sistema. Para mas informacion, consulte el README correspondiente."
+		retorno=1
+		return 1
+	fi
 	return 0
 }
 
