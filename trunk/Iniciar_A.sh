@@ -7,12 +7,14 @@
 # Programa principal
 function main {
 	declare local retorno=0
-	declare local config="../conf/Instalar_TP.conf"
+	declare local directorioBase=""
+	rescatarDirectorioBase
+	declare local config="$directorioBase/conf/Instalar_TP.conf"
 	declare local demonioCorriendo=0
 	declare local ID_Recibir_A=-1
 	
 	perl Grabar_L.pl Iniciar_A I "Comando Iniciar_A Inicio de Ejecución."
-	existeFicheroConPermisos f $config r
+	existeFicheroConPermisos f "$config" r
 	estaAmbienteInicializado
 	setearEntorno
 	realizarValidaciones
@@ -25,6 +27,27 @@ function main {
 		perl Grabar_L.pl Iniciar_A I "El programa finalizó con éxito."
 	fi
 	perl Grabar_L.pl Iniciar_A I "Comando Iniciar_A Fin de Ejecución."
+	return 0
+}
+
+# Rescata el directorio base de forma manual que vendría a ser igual a $GRUPO
+function rescatarDirectorioBase {
+	if [[ $retorno -ne 0 ]]; then return 1; fi
+	declare local directorioActual=`pwd`
+	declare local encontrado=0
+
+	while [[ "$encontrado" == 0 ]]; do
+		cd ..
+		for directorios in `ls`; do
+			if [[ "$directorios" == "conf" ]]; then
+				encontrado=1 # Estoy en $grupo! (asumiendo que /conf existe en $grupo sin directorios intermedios
+				break
+			fi
+		done
+	done
+
+	directorioBase=`pwd`
+	cd "$directorioActual"
 	return 0
 }
 
@@ -115,7 +138,7 @@ function setearEntorno {
 # existente en el archivo de configuracion
 function conseguirVariable { # $1: Variable
 	if [[ $retorno -ne 0 ]]; then return 1; fi
-	declare local vSalida=`grep '^'$1'' $config | sed 's@^[^=]*=\([^=]*\)=[^=]*=[^=]*$@\1@'`
+	declare local vSalida=`grep '^'$1'' "$config" | sed 's@^[^=]*=\([^=]*\)=[^=]*=[^=]*$@\1@'`
 	if [[ "$vSalida" == "" ]]; then
 		perl Grabar_L.pl Iniciar_A E "Registro de $1 inexistente o malformado en el archivo de configuracion."
 		retorno=1
