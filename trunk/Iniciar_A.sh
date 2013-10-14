@@ -7,9 +7,9 @@
 # Programa principal
 function main {
 	declare local retorno=0
-	declare local directorioBase=""
-	rescatarDirectorioBase
-	declare local config="$directorioBase/conf/Instalar_TP.conf"
+	export MAINDIR=""
+	rescatarMainDir
+	declare local config="$MAINDIR/conf/Instalar_TP.conf"
 	declare local demonioCorriendo=0
 	declare local ID_Recibir_A=-1
 	
@@ -33,7 +33,7 @@ function main {
 }
 
 # Rescata el directorio base de forma manual que vendría a ser igual a $GRUPO
-function rescatarDirectorioBase {
+function rescatarMainDir {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	declare local directorioActual=`pwd`
 	declare local encontrado=0
@@ -48,7 +48,7 @@ function rescatarDirectorioBase {
 		if [[ "$encontrado" == 0 ]]; then cd ..; fi
 	done
 
-	directorioBase=`pwd`
+	MAINDIR=`pwd`
 	cd "$directorioActual"
 	return 0
 }
