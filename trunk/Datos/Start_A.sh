@@ -16,7 +16,14 @@
 	 else
 		 var=$(ps -o pid -C $1 | sed "2q;d")
 		 if  [ "$var" == "" ];  then
-			$archivo & > /dev/null 
+			extension=$(echo $archivo | sed 's/.*\(\..*\)$/\1/') 			
+			
+			if [ $extension == ".pl" ]; then
+				perl $archivo
+			else
+				echo "$extension"
+				$archivo & > /dev/null 	
+			fi
 			#echo "Arrancado el comando"
 			if [ $params -gt 1 ]; then
 				perl Grabar_L.pl $2 $3 "Se ejecuta el comando '$1'"
