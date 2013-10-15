@@ -1,0 +1,4 @@
+Pasos para su correcta ejecución:
+   1. Abrir una terminal en el directorio BINDIR indicado en el proceso de instalación.
+   2. Ejecutar el proceso Iniciar_A.sh en el mismo ambiente, es decir sin crear un
+      proceso hijo, con el siguiente comando: ". ./Iniciar_A.sh" (sin las comillas).
