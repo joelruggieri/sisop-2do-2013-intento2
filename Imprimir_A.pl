@@ -10,10 +10,10 @@ use Data::Dumper;
 #$PROCDIR= "/home/nicolas/SistemasOperativos/Practica/";
 #$MAEDIR= "/home/nicolas/SistemasOperativos/Practica/";
 
-#$PROCDIR = "/home/maxi/Desktop/grupo_tres/procesados/";
-#$REPODIR = "/home/maxi/Desktop/grupo_tres/repo/";
-$PROCDIR = "/home/administrador/Escritorio/sisop2/";
-$REPODIR = "/home/administrador/Escritorio/sisop2/";
+$PROCDIR = "/home/maxi/Desktop/grupo_tres/procesados";
+$REPODIR = "/home/maxi/Desktop/grupo_tres/repo";
+#$PROCDIR = "/home/administrador/Escritorio/sisop2";
+#$REPODIR = "/home/administrador/Escritorio/sisop2";
 
 
 
@@ -122,7 +122,7 @@ sub imprimirAyuda {
 
 sub existeReferenciaUsuario{
 	my ($ref) = @_;
-	my ($dir) = "$REPODIR"."$ref".".inv";
+	my ($dir) = "$REPODIR"."/"."$ref".".inv";
 	
 	if (  $ref eq "" or not -e $dir or -z $dir ){
 		$return = 0;
@@ -158,7 +158,7 @@ sub procesarOpcionDeUsuario{
 	%hashRef;
 	$butacas = 0;
 	print "@evento\n";	
-	if(!open (RESERVAS, "<$PROCDIR".'reservas.ok')){
+	if(!open (RESERVAS, "<$PROCDIR"."/".'reservas.ok')){
 		$result = "Error al leer el archivo de reservas";		
 	} 
 	
@@ -167,11 +167,7 @@ sub procesarOpcionDeUsuario{
 		while ($linea=<RESERVAS>){
 			@data = split(";", $linea);
 			
-			$idCombo = $data[7];
-			if( $aArchivo ){
-					startArchivoInvitados();
-			}
-			
+						
 			if( $evento[0] eq $data[1] and $evento[1] eq $data[2]
 				and $evento[2] eq $data[3] and $evento[3]eq $data[5]) {
 														
@@ -207,7 +203,7 @@ sub procesarOpcionDeUsuario{
 	
 sub recorrerListaInvitados{
 	my ($ref) = @_;
-	my ($dir) = "$REPODIR"."$ref".".inv";	
+	my ($dir) = "$REPODIR"."/"."$ref".".inv";	
 	$totalacumulado = $hashRef{$ref};	
 	if(!open (REFERENCIA, "<$dir")){
 		$result = "Error al leer el archivo de reservas";
@@ -255,11 +251,11 @@ sub evaluarOpcionUsuarioListado{
 sub generarListaEventos{
 	
 	@listaOpciones;
-	my( %hashEventos);
+	%hashEventos;
 	my (@auxList);
 	my ($i) = 0;
 	my ($result) = 0;
-	if(!open (RESERVAS, "<$PROCDIR".'reservas.ok')){
+	if(!open (RESERVAS, "<$PROCDIR"."/".'reservas.ok')){
 		
 		$result = "Error al leer el archivo de reservas";
 		
@@ -269,7 +265,8 @@ sub generarListaEventos{
 			@data = split(";", $linea);
 			my $clave = "$data[1]-$data[2]-$data[3]-$data[5]";
 			if ($hashEventos{"$clave"} eq ""){
-				$hashEventos{"$clave"} = $i;				
+				$idCombo = $data[7];
+				$hashEventos{"$clave"} = $idCombo;				
 				$imprimir = "$i- $data[1] $data[2] $data[3] $data[5]\n";
 				imprimirAPantalla($imprimir);				
 				$listaOpciones[$i] = $clave;
@@ -296,7 +293,11 @@ sub imprimirInvitados{
 	$imprimir = "Se listan los eventos candidatos\n";
 	$result = &generarListaEventos();
 	&evaluarOpcionUsuarioListado();	
-	
+	$idCombo = $hashEventos{$listaOpciones[$opcion]};
+	imprimirAPantalla($idCombo);
+	if( $aArchivo ){
+		startArchivoInvitados();
+	}
 	$result = &procesarOpcionDeUsuario();
 	
 	
@@ -308,7 +309,7 @@ sub imprimirInvitados{
 
 
 sub startArchivoInvitados{	
-	$direccion = "$REPODIR$idCombo.inv";
+	$direccion = "$REPODIR"."/"."$idCombo.inv";
 	if ( not open (ARCHIVO,">$direccion") ){
 				print "Error al abrir en modo escritura $direccion";
 				exit 1;
@@ -404,7 +405,7 @@ sub leerArchivoCombos{
 	$entro = 0;
 	my ($result) = 0;
 
-	if(!open (COMBOS, "<$PROCDIR".'combos.dis')){
+	if(!open (COMBOS, "<$PROCDIR"."/".'combos.dis')){
 		print "\booo";
 		$result = "Error al leer el archivo de reservas";
 		
@@ -418,9 +419,10 @@ sub leerArchivoCombos{
 	   close(COMBOS);	
 	}
 	if ($entro == 0 ){
-		$imprimir = "El parametro ingresado es erroneo ingreselo nuevamente:\n";
+		$imprimir = "\nEl parametro ingresado es erroneo ingreselo nuevamente:\n";
 		&imprimirAPantalla($imprimir);
 		&procesarOpcionUsuario();
+		&leerArchivoCombos();
 	}
 	$return = $result;
 }	
@@ -448,7 +450,13 @@ sub startArchivoDisponibilidad{
 	&imprimirAPantalla($imprimir);
 	$nombre = <STDIN>;
 	chomp($nombre);
-	$direccion = "$REPODIR$nombre.dis";
+	while ($nombre eq "combos") {
+		print "El nombre no puede ser combos, intente nuevamente:\n";
+		$nombre = <STDIN>;
+		chomp($nombre);
+	}
+	
+	$direccion = "$REPODIR"."/"."$nombre.dis";
 	if ( not open (ARCHIVO,">$direccion") ){
 				print "Error al abrir en modo escritura $direccion";
 				exit 1;
@@ -516,7 +524,7 @@ sub crearNombreArchivoRanking{
 		
 	
 		#abro el archivo... si... dsps de todo eso ya se como se va a llamar..
-		$nArchivo = "$REPODIR".'ranking'.".$numero";
+		$nArchivo = "$REPODIR"."/".'ranking'.".$numero";
 		$return = $nArchivo;
 	} else {
 		$return = "";
@@ -555,10 +563,10 @@ sub generarReporteRanking{
 }
 #Retorna un string con el error si hay, y carga el hash con los datos de las reservas.
 sub leerReservas{
-	#print "<$PROCDIR".'reservas.ok\n';
+	#print "<$PROCDIR"."/".'reservas.ok\n';
 	my($hash) = @_;
 	my($result) = 0;
-	if(!open (RESERVAS, "<$PROCDIR".'reservas.ok')){
+	if(!open (RESERVAS, "<$PROCDIR"."/".'reservas.ok')){
 		$result = "Error al leer el archivo de reservas";
 		exit 1;
 	} else {
@@ -574,9 +582,9 @@ sub leerReservas{
 }
 #Retorna un string con el error si hay, y carga el hash con los datos de las reservas.
 sub leerReservas_campos{
-	#print "<$PROCDIR".'reservas.ok\n';
+	#print "<$PROCDIR"."/".'reservas.ok\n';
 	my($result) = 0;
-	if(!open (RESERVAS, "<$PROCDIR".'reservas.ok')){
+	if(!open (RESERVAS, "<$PROCDIR"."/".'reservas.ok')){
 		$result = "Error al leer el archivo de reservas";
 		exit 1;
 	} else {
@@ -596,7 +604,7 @@ sub obtenerComboID {
 	chomp($comboID);
 	my($encontrado)=0;
 	
-	open(COMBOS, "<$PROCDIR".'combos.dis') || die "Error: no se pudo abrir combos.dis";
+	open(COMBOS, "<$PROCDIR"."/".'combos.dis') || die "Error: no se pudo abrir combos.dis";
 	@array = <COMBOS>;
 	
 	while (!$encontrado) {
@@ -658,7 +666,7 @@ sub procesarRegistroDelCombo {
 sub procesarRegistroCombo {
 	my($comboID, $impresora) = @_;
 
-	open(RESERVAS, "<$PROCDIR".'reservas.ok') || die "Error: no se pudo abrir reservas.ok";
+	open(RESERVAS, "<$PROCDIR"."/".'reservas.ok') || die "Error: no se pudo abrir reservas.ok";
 	@array = <RESERVAS>;
 	
 	# Asigna al arreglo todos los registros del archivo.
@@ -689,7 +697,7 @@ sub imprimirTickets{
 
 sub startArchivoTickets {
 	my($nombreArch) = @_;
-	abrirArchivoCrear("$REPODIR"."$nombreArch".".tck");
+	abrirArchivoCrear("$REPODIR"."/"."$nombreArch".".tck");
 }
 
 sub imprimirAArchivo{
