@@ -7,20 +7,18 @@ function Copiar_archivos {
 		local Nombre_archivo=`echo $Archivo | sed -n 's/.*[/]\([^/]*\)/\1/p'`
 		if [[ ! -f $3/$Nombre_archivo ]]; then
 			cp -a "$Archivo" "$3"
-		else
-			echo "Ya existe"
 		fi
 	done 
 }
 function Crear_directorios {
 
-	local Dir=`echo $1 | sed  's/\(^[A-Za-z0-9]*\)\/.*/\1/'`
-	local Subdir=`echo $1 | sed -n 's/[A-Za-z0-9]*\/\(.*\)/\1/p'`
-	if [[ ! -d $2/$Dir ]]; then
+	local Dir=`echo $1 | sed  's-\([^/]*\)\/.*-\1-'`
+	local Subdir=`echo $1 | sed -n 's-[^/]*\/\(.*\)-\1-p'`
+	if [[ ! -d "$2/$Dir" ]]; then
 		mkdir "$2/$Dir"
 	fi
 	if [[ "$Subdir" != "" ]]; then 
-		Crear_directorios $Subdir $2/$Dir
+		Crear_directorios "$Subdir" "$2/$Dir"
 	fi
 }
 function Verificar_perl {
@@ -155,7 +153,56 @@ function Verificar_faltantes {
 				echo "/$BINDIR/diferenciaDias.pl" 
 				echo "/$BINDIR/diferenciaDias.pl" >> CONFDIR/Instalar_TP.log
 			fi
-			
+			if [[ ! -f "$MAINDIR/$BINDIR/Imprimir.pl" ]]; then
+				Faltantes="$Faltantes 
+				Imprimir.pl"
+				if [[ ! -f  "$MAINDIR/Datos/Imprimir.pl" ]]; then
+					ERROR=1
+				fi
+			else
+				echo "/$BINDIR/Imprimir.pl" 
+				echo "/$BINDIR/Imprimir.pl" >> CONFDIR/Instalar_TP.log
+			fi
+			if [[ ! -f "$MAINDIR/$BINDIR/Imprimir_A.pl" ]]; then
+				Faltantes="$Faltantes 
+				Imprimir_A.pl"
+				if [[ ! -f  "$MAINDIR/Datos/Imprimir_A.pl" ]]; then
+					ERROR=1
+				fi
+			else
+				echo "/$BINDIR/Imprimir_A.pl" 
+				echo "/$BINDIR/Imprimir_A.pl" >> CONFDIR/Instalar_TP.log
+			fi
+			if [[ ! -f "$MAINDIR/$BINDIR/Iniciar_A.sh" ]]; then
+				Faltantes="$Faltantes 
+				Imprimir_A.pl"
+				if [[ ! -f  "$MAINDIR/Datos/Iniciar_A.sh" ]]; then
+					ERROR=1
+				fi
+			else
+				echo "/$BINDIR/Iniciar_A.sh" 
+				echo "/$BINDIR/Iniciar_A.sh" >> CONFDIR/Instalar_TP.log
+			fi
+			if [[ ! -f "$MAINDIR/$BINDIR/Start_A.sh" ]]; then
+				Faltantes="$Faltantes 
+				Start_A.sh"
+				if [[ ! -f  "$MAINDIR/Datos/Start_A.sh" ]]; then
+					ERROR=1
+				fi
+			else
+				echo "/$BINDIR/Start_A.sh" 
+				echo "/$BINDIR/Start_A.sh" >> CONFDIR/Instalar_TP.log
+			fi
+			if [[ ! -f "$MAINDIR/$BINDIR/Stop_A.sh" ]]; then
+				Faltantes="$Faltantes 
+				Start_A.sh"
+				if [[ ! -f  "$MAINDIR/Datos/Stop_A.sh" ]]; then
+					ERROR=1
+				fi
+			else
+				echo "/$BINDIR/Stop_A.sh" 
+				echo "/$BINDIR/Stop_A.sh" >> CONFDIR/Instalar_TP.log
+			fi
 		fi
 		MAEDIR_temp=`echo $linea | grep '.*maestros*.'`
 		if [[ $MAEDIR_temp != "" ]]; then
@@ -250,7 +297,7 @@ Proceso de instalacion cancelado." >> CONFDIR/Instalar_TP.log
 	fi
 }
 #declaraciones 
-MAINDIR="/home/administrador/Escritorio/Repo"
+MAINDIR="."
 #programa ppal
 clear
 Instalacion_previa=0
@@ -309,7 +356,26 @@ if [[ $Instalacion_previa == 0 ]]; then
 		Obtener_numero DATASIZE "Defina el espacio minimo libre para el arribo de archivos externos en Mbytes ($5):" "error" "$5" 1
 	fi
 	#COMPRUEBO ESPACIO EN DISCO
-		Espaciodisco=`df -h | grep 'sda'| tr -s " " | sed 's/.*[A-Za-z].*[A-Za-z].\(.*\)[A-Za-z].*/\1/'`
+		Espaciodisco=`df -h | grep 'sda'| tr -s " " | sed 's/.*[A-Za-z].*[A-Za-z].\(.*\)[A-Za-z].*/\1/'`	
+		let Espaciodisco=`expr $Espaciodisco*1024`
+		while [ $Espaciodisco -lt $DATASIZE ]
+		do
+			echo "Insuficiente espacio en disco.
+Espacio disponible: $Espaciodisco Mb.
+Cancele la instalacion e intentelo mas tarde o vuelva a intentarlo con otro valor"
+echo "Insuficiente espacio en disco.
+Espacio disponible: $Espaciodisco Mb.
+Cancele la instalacion e intentelo mas tarde o vuelva a intentarlo con otro valor">> CONFDIR/Instalar_TP.log
+		Pregunta_sn "Desea cancelar? (si) o elegir un nuevo espacio para el arribo de archivos externos(no) si-no"
+		if [ "$?" == 1 ]; then
+			exit 0
+		fi
+		if [ "$5" == "" ]; then
+			Obtener_numero DATASIZE "Defina el espacio minimo libre para el arribo de archivos externos en Mbytes (100):" "error" "100" 1
+		else
+			Obtener_numero DATASIZE "Defina el espacio minimo libre para el arribo de archivos externos en Mbytes ($5):" "error" "$5" 1
+		fi		
+		done
 	#solicito valor de ACEPDIR
 	if [ "$6" == "" ]; then
 		Obtener_path ACEPDIR "Defina el directorio de grabacion de  los archivos externos aceptados ($MAINDIR/aceptados):" "aceptados"
@@ -336,7 +402,6 @@ if [[ $Instalacion_previa == 0 ]]; then
 	fi
 	#solicito valor de LOGDIR
 	if [ "${10}" == "" ]; then
-		echo "escero!"
 		Obtener_path LOGDIR "Defina el directorio de logs ($MAINDIR/log):" "log"
 	else
 		Obtener_path LOGDIR "Defina el directorio de logs ($MAINDIR/${10}):" "${10}"
@@ -399,29 +464,29 @@ fi
 #Creo directorios
 echo "Creando estructuras de directorio . . . ."
 echo "/$BINDIR/"
-Crear_directorios $BINDIR $MAINDIR
+Crear_directorios "$BINDIR" $MAINDIR
 echo "/$MAEDIR/"
-Crear_directorios $MAEDIR $MAINDIR
+Crear_directorios "$MAEDIR" $MAINDIR
 echo "/$ARRIDIR/"
-Crear_directorios $ARRIDIR $MAINDIR
+Crear_directorios "$ARRIDIR" $MAINDIR
 echo "/$ACEPDIR/"
-Crear_directorios $ACEPDIR $MAINDIR
+Crear_directorios "$ACEPDIR" $MAINDIR
 echo "/$RECHDIR/"
-Crear_directorios $RECHDIR $MAINDIR
+Crear_directorios "$RECHDIR" $MAINDIR
 echo  "/$PROCDIR/"
-Crear_directorios $PROCDIR $MAINDIR
+Crear_directorios "$PROCDIR" $MAINDIR
 echo "/$REPODIR/"
-Crear_directorios $REPODIR $MAINDIR
+Crear_directorios "$REPODIR" $MAINDIR
 echo "/$LOGDIR/"
-Crear_directorios $LOGDIR $MAINDIR
+Crear_directorios "$LOGDIR" $MAINDIR
 #instalo archivos
 echo "Instalando Archivos Maestros"
-Copiar_archivos "$MAINDIR/Datos" "*.mae" $MAINDIR/$MAEDIR
+Copiar_archivos "$MAINDIR/Datos" "*.mae" "$MAINDIR/$MAEDIR"
 echo "Instalando Archivo de disponibilidad"
-Copiar_archivos "$MAINDIR/Datos" "*.dis" $MAINDIR/$PROCDIR
+Copiar_archivos "$MAINDIR/Datos" "*.dis" "$MAINDIR/$PROCDIR"
 echo "Instalando Programas y funciones"
-Copiar_archivos "$MAINDIR/Datos" "*.sh" $MAINDIR/$BINDIR
-Copiar_archivos "$MAINDIR/Datos" "*.pl" $MAINDIR/$BINDIR
+Copiar_archivos "$MAINDIR/Datos" "*.sh" "$MAINDIR/$BINDIR"
+Copiar_archivos "$MAINDIR/Datos" "*.pl" "$MAINDIR/$BINDIR"
 #Actualizo archivos de configuracion
 if [[ -f CONFDIR/Instalar_TP.conf ]]; then
 	rm CONFDIR/Instalar_TP.conf
