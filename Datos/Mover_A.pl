@@ -120,11 +120,13 @@ sub verificarParametros{
 	pop (@vector);
 	$dir_origen = join ("/",@vector);
 	
+#	print $dir_origen;
+#	print $dir_origen;
 	
 	#Si origen y destino son iguales no mover
 	if ( "$dir_origen" eq "$destino" ){
 		$tipoMsj="E";	
-		$ERROR= "No se produsco la accion, destino y origen son los mismo\n";
+		$ERROR= "No se produzco la accion, destino y origen son los mismo\n";
 		&salir();
 	}
 	
@@ -149,6 +151,11 @@ sub validarEntrada{
 	if ($#ARGV < 1 or $#ARGV > 2 ){
 		$tipoMsj="SE";
 		$ERROR="La cantidad de parametros no es la esperada\n";
+		
+		print "$ARGV[0]\n";
+		print "$ARGV[1]\n";
+		print "$ARGV[2]\n";
+		
 		&salir();
 	}
 	
