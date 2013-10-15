@@ -536,7 +536,10 @@ sub generarReporteRanking{
 	#no esta muy bueno el uso de una variable local pero se mambeó cuand quise hacerla my.
 	my($impresora) = @_;
 	my(%hash);
-	my(%hashTitulo,%hashFecha,%hashNSala,%hashHora);
+	%hashTitulo;
+	%hashFecha;
+	%hashNSala;
+	%hashHora;
 	leerReservas_campos();
 	my($result) = leerReservas(\%hash);
 	if(!$result){
@@ -592,7 +595,7 @@ sub leerReservas_campos{
 			@data = split(";", $linea);
 			$hashTitulo->{"$data[0]$data[2]$data[3]$data[4]"} = $data[1];
 			$hashFecha->{"$data[0]$data[2]$data[3]$data[4]"} = $data[2];
-			$hashNSala->{"$$data[0]$data[2]$data[3]$data[4]"} = $data[5];
+			$hashNSala->{"$data[0]$data[2]$data[3]$data[4]"} = $data[5];			
 			$hashHora->{"$data[0]$data[2]$data[3]$data[4]"} = $data[3];	
 		}
 	    close(RESERVAS);
