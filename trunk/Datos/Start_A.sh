@@ -21,7 +21,7 @@
 			if [ $extension == ".pl" ]; then
 				perl $archivo
 			else
-				echo "$extension"
+				#echo "$extension"
 				$archivo & > /dev/null 	
 			fi
 			#echo "Arrancado el comando"
