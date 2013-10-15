@@ -21,7 +21,6 @@ REPOSITORIO="$GRUPO"/"$REPODIR"
 
 while (true)
 do
-	echo "MAXIIIIIIIIIII"
 	perl Grabar_L.pl Recibir_A "Ciclo Numero $NUMERO_DE_CICLO"
 	for archivo in `ls "$GRUPO"/"$ARRIDIR"`
 	do
