@@ -212,17 +212,17 @@ function generarRegistroOk {
 	if [[ $(($id%2)) == 0 ]]; then
 		# Si el ID es par, me quedo con el ID de Sala y el nombre de Sala
 		idSala="$id"
-		comboRegistro=`grep '^[^;]*;[^;]*;'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';'"$id"';.*' "$PROCDIR/combos.dis"`
+		comboRegistro=`grep '^[^;]*;[^;]*;'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';'"$id"';.*' "$GRUPO"/"$PROCDIR"/"combos.dis"`
 		idObra=`echo "$comboRegistro" | cut -d ";" -f 2`
 	else
 		# Sino con el ID de Obra y el 
 		idObra="$id"
-		comboRegistro=`grep '^[^;]*;'"$id"';'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';.*' "$PROCDIR/combos.dis"`
+		comboRegistro=`grep '^[^;]*;'"$id"';'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';.*' "$GRUPO"/"$PROCDIR"/"combos.dis"`
 		idSala=`echo "$comboRegistro" | cut -d ";" -f 5`	
 	fi
 	
-	obraRegistro=`grep '^'"$idObra"';.*' $MAEDIR/obras.mae`
-	salaRegistro=`grep '^'"$idSala"';.*' $MAEDIR/salas.mae`
+	obraRegistro=`grep '^'"$idObra"';.*' "$GRUPO"/"$MAEDIR"/"obras.mae"`
+	salaRegistro=`grep '^'"$idSala"';.*' "$GRUPO"/"$MAEDIR"/"salas.mae"`
 	nombreObra=`echo "$obraRegistro" | cut -d ";" -f 2`
 	nombreSala=`echo "$salaRegistro" | cut -d ";" -f 2`
 	
@@ -248,7 +248,7 @@ function generarRegistroOk {
 	#echo "--fin registro Ok--"
 	
 	# Escribo el archivo reservas.ok
-	echo "$idObra;$nombreObra;$diaFuncion/$mesFuncion/$anioFuncion;$horaFuncion:$minutosFuncion;$idSala;$nombreSala;$butacasPedidas;$comboID;$refIntSolicitante;$butacasPedidas;$correo;$USER;$fecha" >> "$PROCDIR/reservas.ok"
+	echo "$idObra;$nombreObra;$diaFuncion/$mesFuncion/$anioFuncion;$horaFuncion:$minutosFuncion;$idSala;$nombreSala;$butacasPedidas;$comboID;$refIntSolicitante;$butacasPedidas;$correo;$USER;$fecha" >> "$GRUPO"/"$PROCDIR"/"reservas.ok"
 	
 	actualizarRegistrosOk $butacasPedidas
 	
@@ -273,7 +273,7 @@ function generarRegistroNok {
 	if [[ $(($id%2)) == 0 ]]; then
 		# Si el ID es par, me quedo con el ID de Sala y el nombre de Sala
 		idSala="$id"
-		comboRegistro=`grep '^[^;]*;[^;]*;'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';'"$id"';.*' "$PROCDIR/combos.dis"`
+		comboRegistro=`grep '^[^;]*;[^;]*;'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';'"$id"';.*' "$GRUPO"/"$PROCDIR"/"combos.dis"`
 		idObra=`echo "$comboRegistro" | cut -d ";" -f 2`
 		if [[ ! $idObra ]]; then
 			idObra="Falta OBRA"
@@ -281,7 +281,7 @@ function generarRegistroNok {
 	else
 		# Sino con el ID de Obra y el 
 		idObra="$id"
-		comboRegistro=`grep '^[^;]*;'"$id"';'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';.*' "$PROCDIR/combos.dis"`
+		comboRegistro=`grep '^[^;]*;'"$id"';'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';.*' "$GRUPO"/"$PROCDIR"/"combos.dis"`
 		idSala=`echo "$comboRegistro" | cut -d ";" -f 5`
 		if [[ ! $idSala ]]; then
 			idSala="Falta SALA"
@@ -310,7 +310,7 @@ function generarRegistroNok {
 	#echo $fecha
 	#echo "--fin Registro Nok--"
 	
-	echo "$refIntSolicitante;$diaFuncion/$mesFuncion/$anioFuncion;$horaFuncion:$minutosFuncion;$nroFila;$nroButaca;$butacasSolicitadas;$motivo;$idSala;$idObra;$correo;$USER;$fecha" >> "$PROCDIR/reservas.nok"
+	echo "$refIntSolicitante;$diaFuncion/$mesFuncion/$anioFuncion;$horaFuncion:$minutosFuncion;$nroFila;$nroButaca;$butacasSolicitadas;$motivo;$idSala;$idObra;$correo;$USER;$fecha" >> "$GRUPO"/"$PROCDIR"/"reservas.nok"
 	
 	# Actualizo el contador
 	regNok="$(($regNok+1))"
@@ -395,33 +395,45 @@ function procesarRegistros {
  
 # Se procesan los archivos en ACEPDIR
 function procesarArchivos {
+	declare local direccionActual=`pwd`
+	cd "$GRUPO"
+	cd "$ACEPDIR"
 	
-	for archivo in `ls $ACEPDIR`;
+	for archivo in `ls`;
 	do
 		perl Grabar_L.pl Reservar_A I "Archivo a procesar: $ACEPDIR/$archivo"
 		#echo "$archivo"
 		while IFS='' read -r linea || [ -n "$linea" ]; do
 			procesarRegistros "$linea" "$archivo" 
-		done < $ACEPDIR/$archivo
+		done < $archivo
 		# Muevo el archivo a PROCDIR
 		perl Grabar_L.pl Reservar_A I "Moviendo archivo a $PROCDIR"
-		perl Mover_A.pl $ACEPDIR/$archivo $PROCDIR "Reservar_A"
+		declare local direccionOrigen="$GRUPO"/"$ACEPDIR"/"$archivo"
+		declare local direccionDestino="$GRUPO"/"$PROCDIR"
+		perl Mover_A.pl "$direccionOrigen" "$direccionDestino" "Reservar_A"
 	done
 	
+	cd "$direccionActual"
 	return 0
 }
 
 # Se verifica si hay archivos vacios en ACEPDIR, si los 
 # hay, se los mueve a RECHDIR
 function revisarArchivosVacios {
+	declare local direccionActual=`pwd`
+	cd "$GRUPO"
+	cd "$ACEPDIR"
 	
-	for i in `find $ACEPDIR -type f -empty`
+	for i in `find -type f -empty`
 	do
 		perl Grabar_L.pl Reservar_A I "Archivo a procesar: $i"
 		perl Grabar_L.pl Reservar_A I "Archivo $i vacio, se rechaza"
-		perl Mover_A.pl $i $RECHDIR "Reservar_A"
+		declare local direccionOrigen="$GRUPO"/"$ACEPDIR"/"$i"
+		declare local direccionDestino="$GRUPO"/"$RECHDIR"
+		perl Mover_A.pl "$direccionOrigen" $direccionDestino "Reservar_A"
 	done
 	
+	cd "$direccionActual"
 	return 0
 }
 
@@ -442,19 +454,30 @@ function validacionesNivelArchivo {
 # Si hay un archivo en ACEPDIR que ya existe en PROCDIR, se lo mueve a 
 # RECHDIR
 function revisarDuplicados {
+	declare local direccionActual=`pwd`
+	cd "$GRUPO"
+	cd "$ACEPDIR"
+	elementosAceptados=`ls`
 	
-	for i in `ls $ACEPDIR`
+	cd "$GRUPO"
+	cd "$PROCDIR"
+	elementosProcesados=`ls`
+	
+	for i in $elementosAceptados
 	do
-		for j in `ls $PROCDIR`;
+		for j in $elementosProcesados;
 		do
 			if [ $i == $j ]; then
 				perl Grabar_L.pl Reservar_A I "Archivo a procesar: $i"
 				perl Grabar_L.pl Reservar_A I "Archivo $i duplicado, se rechaza"
-				perl Mover_A.pl $ACEPDIR/$i $RECHDIR "Reservar_A"
+				declare local direccionOrigen="$GRUPO"/"$ACEPDIR"/"$i"
+				declare local direccionDestino="$GRUPO"/"$RECHDIR"
+				perl Mover_A.pl "$direccionOrigen" "$direccionDestino" "Reservar_A"
 			fi
 		done
 	done
 	
+	cd "$direccionActual"
 	return 0
 }
 
@@ -469,14 +492,14 @@ function filalizarProceso {
 	do
 		#echo $idCombo
 		#echo ${mapaDispo[$idCombo]}
-		sed -i 's/^\('"$idCombo"';[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;\)[^;]*\(;[^;]*\)/\1'${mapaDispo[$idCombo]}'\2/' $PROCDIR/combos.dis
+		sed -i 's/^\('"$idCombo"';[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;\)[^;]*\(;[^;]*\)/\1'${mapaDispo[$idCombo]}'\2/' "$GRUPO"/"$PROCDIR"/"combos.dis"
 	done
 	
 	perl Grabar_L.pl Reservar_A I "Fin de Reservar_A"
 }
 
 function inicializarProceso {
-	cantidadArchivos=`ls $ACEPDIR | wc -l`
+	cantidadArchivos=`ls "$GRUPO"/"$ACEPDIR" | wc -l`
 	#echo "Log:Inicio de Reservar_A. La cantidad de archivos en el directorio es $cantidadArchivos"
 	perl Grabar_L.pl Reservar_A I "Inicio de Reservar_A"
 	perl Grabar_L.pl Reservar_A I "La cantidad de archivos en $ACEPDIR es $cantidadArchivos"
@@ -489,12 +512,15 @@ function inicializarProceso {
 }
 
 function verificarAmbiente {
-	
-	if [[ ! $PROCDIR || ! $ACEPDIR || ! $RECHDIR || ! $MAEDIR || ! $LOGEXT || ! $LOGDIR || ! $CONFDIR || ! $LOGSIZE ]]; then
+	if [[ ${PROCDIR:-n} == "n" || ${ACEPDIR:-n} == "n" || ${RECHDIR:-n} == "n" || ${MAEDIR:-n} == "n" ]]; then
 		echo "Ambiente no inicilizado"
 		exit 1
 	fi
 	
+	if [[ ${LOGEXT:-n} == "n" || ${LOGDIR:-n} == "n" || ${CONFDIR:-n} == "n" || ${LOGSIZE:-n} == "n" ]]; then
+		echo "Ambiente no inicilizado"
+		exit 1
+	fi
 	return 0
 }
 
