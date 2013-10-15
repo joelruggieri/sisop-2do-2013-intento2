@@ -196,7 +196,7 @@ function estanComandosInstalados {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	
 	# Ejecutables Shell Script
-	existeFicheroConPermisos f "$GRUPO/$BINDIR/Instalar_TP.sh" x
+#	existeFicheroConPermisos f "$GRUPO/$BINDIR/Instalar_TP.sh" x
 	existeFicheroConPermisos f "$GRUPO/$BINDIR/Recibir_A.sh" x
 	existeFicheroConPermisos f "$GRUPO/$BINDIR/Reservar_A.sh" x
 	existeFicheroConPermisos f "$GRUPO/$BINDIR/Start_A.sh" x
