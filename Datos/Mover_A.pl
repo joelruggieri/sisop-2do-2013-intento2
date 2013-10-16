@@ -4,6 +4,9 @@
 use File::Copy;
 use File::Path;
 
+$GRUPO = $ENV{'GRUPO'};
+$BINDIR = $ENV{'BINDIR'};
+$GRABAR="$GRUPO"."/"."$BINDIR"."/"."Grabar_L.pl";
 
 &main();
 
@@ -15,7 +18,7 @@ sub main{
 	&validarEntrada();
 		
 	if ($logComando{$comando} == 1 ){
-		$status=`perl Grabar_L.pl $comando $tipoMsj $msj`;
+		$status=`perl "$GRABAR" $comando $tipoMsj $msj`;
 	}	
 	exit 0;	
 }
@@ -25,7 +28,7 @@ sub salir{
 	#Se logea el tipo de error ;
 	
 	if ($logComando{$comando} == 1 ){
-		$status=`perl Grabar_L.pl $comando $tipoMsj $ERROR`;
+		$status=`perl "$GRABAR" $comando $tipoMsj $ERROR`;
 	}
 	exit -1;
 	

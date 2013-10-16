@@ -438,7 +438,22 @@ function revisarArchivosVacios {
 }
 
 function revisarRegistrosMalFormados {
+	declare local direccionActual=`pwd`
+	cd "$GRUPO"
+	cd "$ACEPDIR"
 	
+	for i in `ls`
+	do
+		cant=`grep -c -v '^[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*$' $i`
+		if [[ $cant -gt 0 ]]; then
+			perl "$GRABAR" Reservar_A I "Archivo $i con registros malformados"
+			declare local direccionOrigen="$GRUPO"/"$ACEPDIR"/"$i"
+			declare local direccionDestino="$GRUPO"/"$RECHDIR"
+			perl "$MOVER" "$direccionOrigen" "$direccionDestino" "Reservar_A"
+		fi
+	done
+	
+	cd "$direccionActual"
 	return 0
 }
 
@@ -447,7 +462,7 @@ function revisarRegistrosMalFormados {
 function validacionesNivelArchivo {
 	revisarDuplicados
 	revisarArchivosVacios
-	#revisarRegistrosMalFormados
+	revisarRegistrosMalFormados
 	return 0
 }
 

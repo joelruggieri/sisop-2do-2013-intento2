@@ -62,8 +62,6 @@ function rescatarMainDir {
 function verificarLoguer {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	
-	echo "$GRABAR"
-	
 	if [ ! -f "$GRABAR" ]; then
 		echo "Loguer 'Grabar_L.pl' inexistente."
 		echo "Por favor, vuelva a instalar el sistema. Para mas informacion, consulte el README correspondiente."
@@ -210,7 +208,7 @@ function estanComandosInstalados {
 	existeFicheroConPermisos f "$GRUPO/$BINDIR/Stop_A.sh" x
 	
 	# Ejecutables PERL
-	existeFicheroConPermisos f "$GRUPO/$BINDIR/diferenciaDias.pl" x
+#	existeFicheroConPermisos f "$GRUPO/$BINDIR/diferenciaDias.pl" x
 	existeFicheroConPermisos f "$GRUPO/$BINDIR/Grabar_L.pl" x
 	existeFicheroConPermisos f "$GRUPO/$BINDIR/Imprimir_A.pl" x
 	existeFicheroConPermisos f "$GRUPO/$BINDIR/Imprimir.pl" x
@@ -274,7 +272,7 @@ function activarRecibir {
 # Le explica al usuario como detener Recibir_A
 function comoDetenerRecibir {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
-	declare local mensaje="Para detener el demonio Recibir_A, ejecutar el comando 'Stop_A Recibir_A.sh' sin las comillas."
+	declare local mensaje="Para detener el demonio Recibir_A, ejecutar el comando 'Stop_A.sh Recibir_A.sh' sin las comillas."
 	perl "$GRABAR" Iniciar_A I "$mensaje"
 	echo "$mensaje"
 	return 0
@@ -283,7 +281,7 @@ function comoDetenerRecibir {
 # Le explica al usuario como correr Recibir_A
 function comoCorrerRecibir {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
-	declare local mensaje="Para correr el demonio Recibir_A, ejecutar el comando 'Start_A Recibir_A.sh' sin las comillas."
+	declare local mensaje="Para correr el demonio Recibir_A, ejecutar el comando 'Start_A.sh Recibir_A.sh' sin las comillas."
 	perl "$GRABAR" Iniciar_A I "$mensaje"
 	echo "$mensaje"
 	comoDetenerRecibir
