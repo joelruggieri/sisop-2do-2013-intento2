@@ -34,21 +34,12 @@ do
 	for archivo in $elementos
 	do
 		RUTA_ARCHIVO="$GRUPO"/"$ARRIDIR"/"$archivo"
-		
-		echo "archivo: $archivo"
-		echo "ruta: $RUTA_ARCHIVO"
-		
 		TIPO_DE_TEXTO=`file "$RUTA_ARCHIVO"`
 		INVITADOS_BIEN_FORMADO=` echo $archivo | grep -c '^[^- ]*\.inv$'`
 		RESERVA_BIEN_FORMADO=`echo $archivo | grep -c '^[0-9]\+-[^-]*-[^- ]*$'`
 		TIPO_TEXTO=`echo $TIPO_DE_TEXTO | grep -c 'text'`
 		LANG_GUARDAR=$LANG
 		LANG=C
-		
-		echo "Invitados bien formado: $INVITADOS_BIEN_FORMADO"
-		echo "Reserva bien formado: $RESERVA_BIEN_FORMADO"
-		echo "Tipo de texto: $TIPO_TEXTO"
-		
 		if [[ ($TIPO_TEXTO -eq 0) || ($RESERVA_BIEN_FORMADO -eq 0 && $INVITADOS_BIEN_FORMADO -eq 0) ]] 
 		then
 			perl "$MOVER" "$RUTA_ARCHIVO" "$RECHAZADOS" Recibir_A

@@ -28,16 +28,17 @@ function Verificar_perl {
 	Perl=`perl --version`
 	Version=`echo $Perl | sed -n 's/.*v\([0-9]\)\.[0-9][0-9]\.[0-9].*/\1/p'`
 	if [[ $Version -lt 5 ]]; then
-		echo "TP SO7508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 03
-Para instalar el TP es necesario contar con  Perl 5 o superior instalado. Efectúe su instalación e inténtelo nuevamente. 
-Proceso de Instalación Cancelado" >> "$CONFDIR"/Instalar_TP.log
+			perl "$GRABAR" Instalar_TP E "TP SO7508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 03"
+			perl "$GRABAR" Instalar_TP E "Para instalar el TP es necesario contar con  Perl 5 o superior instalado."
+			perl "$GRABAR" Instalar_TP E "fectúe su instalación e inténtelo nuevamente. "
+			perl "$GRABAR" Instalar_TP E "Proceso de Instalación Cancelado" 
 		echo "TP SO7508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 03
 Para instalar el TP es necesario contar con  Perl 5 o superior instalado. Efectúe su instalación e inténtelo nuevamente. 
 Proceso de Instalación Cancelado" 
-		exit 0
+		exit 1
 	fi
-	echo "TP SO7508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 03
-Perl Version: $Version" >> "$CONFDIR"/Instalar_TP.log
+	perl "$GRABAR" Instalar_TP I "TP SO7508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 03"
+	perl "$GRABAR" Instalar_TP I "Perl Version: $Version"
 	echo "TP SO7508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 03
 Perl Version: $Version"
 }
@@ -53,7 +54,7 @@ function Obtener_path {
 	else
 		Resultadoparcial=$Resultadoparcial
 	fi
-	echo "$2 $Resultadoparcial" >> "$CONFDIR"/Instalar_TP.log
+	perl "$GRABAR" Instalar_TP I  "$2 $Resultadoparcial" 
     eval $Resultado="'$Resultadoparcial'"
 }
 #Recibe 3 parametros [variable a guardar el resultado,salida en pantalla y log,pathdefecto]
@@ -103,9 +104,7 @@ function conseguirVariable { # $1: Variable
 	
 	declare local vSalida=`grep '^'$1'' "$MAINDIR/$CONFDIR/Instalar_TP.conf" | sed 's@^[^=]*=\([^=]*\)=[^=]*=[^=]*$@\1@'`
 	if [[ "$vSalida" == "" ]]; then
-		#perl Grabar_L.pl Iniciar_A E "Registro de $1 inexistente o malformado en el archivo de configuracion."
-		echo "Error: registro mal formado"
-		echo "Error: registro mal formado" >> "$CONFDIR"/Instalar_TP.log
+		perl "$GRABAR" Instalar_TP E "Error: registro mal formado" 
 		exit 1
 	fi
 	eval "$1=\"$vSalida\""
@@ -116,7 +115,7 @@ function Verificar_faltantes {
 	#verifico que se instalo en la etapa anterior
 	ERROR=0
 	echo "- $linea. Archivos:"
-	echo "- $linea. Archivos:" >> "$CONFDIR"/Instalar_TP.log
+	perl "$GRABAR" Instalar_TP I "- $linea. Archivos:" 
 	conseguirVariable BINDIR
 	#verifico cada archivo
 	if [[ ! -f "$MAINDIR/$BINDIR/Grabar_L.pl" ]]; then
@@ -231,19 +230,21 @@ function Verificar_faltantes {
 	echo
 	echo "/$BINDIR/ Archivos:"
 	ls "$BINDIR"
-	echo "/$BINDIR/ Archivos:" >> "$CONFDIR"/Instalar_TP.log
-	ls "$BINDIR" >> "$CONFDIR"/Instalar_TP.log
-
+	Archivosbin=`ls "$BINDIR" `
+	perl "$GRABAR" Instalar_TP I  "/$BINDIR/ Archivos:" 
+	perl "$GRABAR" Instalar_TP I "$Archivosbin"
 	echo
 	echo "/$MAEDIR/ Archivos:"
-	ls "$MAEDIR" >> "$CONFDIR"/Instalar_TP.log
-	echo "/$MAEDIR/ Archivos:" >> "$CONFDIR"/Instalar_TP.log
+	Archivosmae=`ls "$MAEDIR" `
+	perl "$GRABAR" Instalar_TP I "$Archivosmae"
+	perl "$GRABAR" Instalar_TP I "/$MAEDIR/ Archivos:"
 	ls "$MAEDIR"
 	echo
 	echo "/$CONFDIR/ Archivos:"
 	ls "$CONFDIR"
-	echo "/$CONFDIR/ Archivos:" >> "$CONFDIR"/Instalar_TP.log
-	ls "$CONFDIR" >> "$CONFDIR"/Instalar_TP.log
+	Archivosconf=`ls "$CONFDIR"`
+	perl "$GRABAR" Instalar_TP I "/$CONFDIR/ Archivos:"
+	perl "$GRABAR" Instalar_TP I "$Archivosconf"
 
 	echo
  		
@@ -252,26 +253,30 @@ function Verificar_faltantes {
 	if [[ "$Faltantes" == "" ]]; then
 		echo "Estado de la instalacion: COMPLETA
 Proceso de instalacion cancelado." 
-		echo "Estado de la instalacion: COMPLETA
-Proceso de instalacion cancelado." >> "$CONFDIR"/Instalar_TP.log
+		perl "$GRABAR" Instalar_TP E "Estado de la instalacion: COMPLETA"
+		perl "$GRABAR" Instalar_TP E "Proceso de instalacion cancelado." 
 		exit 0;
 	else 
 		echo "Estado de la instalacion: Incompleto"
-		echo "Estado de la instalacion: Incompleto" >> "$CONFDIR"/Instalar_TP.log
+		perl "$GRABAR" Instalar_TP E "Faltan Archivos: $Faltantes"
+		perl "$GRABAR" Instalar_TP E "Estado de la instalacion: Incompleto"
 		Pregunta_sn "Desea completar la instalacion? (si-no)"
 		if [[ "$?" == 0 ]]; then
 			exit 0
 		else 
 			if [[ $ERROR == 1 ]]; then
 				echo "No se encuentran los archivos fuentes."
-				exit 0;
+				exit 1;
 			fi
 		fi
 	fi
 }
+
 #declaraciones 
-MAINDIR=`pwd`
-CONFDIR="conf"
+export MAINDIR=`pwd`
+export CONFDIR="conf"
+GRABAR="$MAINDIR"/"Datos"/"Grabar_L.pl"
+
 #programa ppal
 clear
 Instalacion_previa=0
@@ -280,20 +285,21 @@ if [[ "$1" != "restart1"  && "${13}" != "restart13" ]];then
 	if [[ ! -d "$CONFDIR" ]]; then
 		mkdir "$CONFDIR"
 	fi
-	echo "Inicio de Ejecucion" >> "$CONFDIR/Instalar_TP.log"
-	echo "Log del Comando Instalar_TP: $CONFDIR/Instalar_TP.log" >> "$CONFDIR"/Instalar_TP.log
+	perl "$GRABAR" Instalar_TP I "Inicio de Ejecucion"
+	perl "$GRABAR" Instalar_TP I "Log del Comando Instalar_TP: $CONFDIR/Instalar_TP.log"
 	echo "Log del Comando Instalar_TP: $CONFDIR/Instalar_TP.log"
-	echo "Directorio de Configuración: $MAINDIR/$CONFDIR" >> "$MAINDIR"/"$CONFDIR"/Instalar_TP.log
+	perl "$GRABAR" Instalar_TP I "Directorio de Configuración: $MAINDIR/$CONFDIR"
 	echo "Directorio de Configuración: $MAINDIR/$CONFDIR" 
 	#verifico si ya fue instalado previamente
 	if [ -f "$CONFDIR/Instalar_TP.conf" ]; then
 			echo "El paquete ya fue instalado previamente
 Estructura de archivos:"
-			echo "El paquete ya fue instalado previamente" >> "$MAINDIR"/"$CONFDIR"/Instalar_TP.log
+			perl "$GRABAR" Instalar_TP E "El paquete ya fue instalado previamente" 
 			Verificar_faltantes
 			Instalacion_previa=1
 		else
-		echo "El paquete no fue instalado previamente" >> "$MAINDIR"/"$CONFDIR"/Instalar_TP.log
+		echo "El paquete no fue instalado previamente"
+		perl "$GRABAR" Instalar_TP I "El paquete no fue instalado previamente" 
 		# terminos y condiciones
 		Pregunta_sn "TP SO7508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 03 \n A T E N C I O N: Al instalar TP SO7508 Segundo Cuatrimestre 2013 UD. expresa aceptar los términos y Condiciones del \"ACUERDO DE LICENCIA DE SOFTWARE\" incluido en este paquete. 
 	Acepta? Si – No"
@@ -338,12 +344,12 @@ if [[ $Instalacion_previa == 0 ]]; then
 			echo "Insuficiente espacio en disco.
 Espacio disponible: $Espaciodisco Mb.
 Cancele la instalacion e intentelo mas tarde o vuelva a intentarlo con otro valor"
-echo "Insuficiente espacio en disco.
-Espacio disponible: $Espaciodisco Mb.
-Cancele la instalacion e intentelo mas tarde o vuelva a intentarlo con otro valor">> "$CONFDIR"/Instalar_TP.log
+		perl "$GRABAR" Instalar_TP E  "Insuficiente espacio en disco."
+		perl "$GRABAR" Instalar_TP E  "Espacio disponible: $Espaciodisco Mb."
+		perl "$GRABAR" Instalar_TP E "Cancele la instalacion e intentelo mas tarde o vuelva a intentarlo con otro valor"
 		Pregunta_sn "Desea cancelar? (si) o elegir un nuevo espacio para el arribo de archivos externos(no) si-no"
 		if [ "$?" == 1 ]; then
-			exit 0
+			exit 1
 		fi
 		if [ "$5" == "" ]; then
 			Obtener_numero DATASIZE "Defina el espacio minimo libre para el arribo de archivos externos en Mbytes (100):" "error" "100" 1
@@ -411,19 +417,19 @@ Logs de auditoria del Sistema: $LOGDIR/<comando>.$LOGEXT
 Tamaño máximo para los archivos de log del sistema: $LOGSIZE Kb
 Estado de la instalacion: LISTA"
 
-echo "TP SO7508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 03
-Librería del Sistema: /$CONFDIR/ 
-Ejecutables: /$BINDIR/ 
-Archivos maestros: /$MAEDIR/ 
-Directorio de arribo de archivos externos: /$ARRIDIR/
-Espacio mínimo libre para arribos: $DATASIZE Mb
-Archivos externos aceptados: /$ACEPDIR/
-Archivos externos rechazados: /$RECHDIR/
-Archivos procesados: /$PROCDIR/
-Reportes de salida: /$REPODIR/
-Logs de auditoria del Sistema: $LOGDIR/<comando>.$LOGEXT
-Tamaño máximo para los archivos de log del sistema: $LOGSIZE Kb
-Estado de la instalacion: LISTA" >> "$CONFDIR"/Instalar_TP.log
+perl "$GRABAR" Instalar_TP I "TP SO7508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 03"
+perl "$GRABAR" Instalar_TP I  "Librería del Sistema: /$CONFDIR/ "
+perl "$GRABAR" Instalar_TP I "Ejecutables: /$BINDIR/" 
+perl "$GRABAR" Instalar_TP I  "Archivos maestros: /$MAEDIR/" 
+perl "$GRABAR" Instalar_TP I  "Directorio de arribo de archivos externos: /$ARRIDIR/"
+perl "$GRABAR" Instalar_TP I "Espacio mínimo libre para arribos: $DATASIZE Mb"
+perl "$GRABAR" Instalar_TP I "Archivos externos aceptados: /$ACEPDIR/"
+perl "$GRABAR" Instalar_TP I "Archivos externos rechazados: /$RECHDIR/"
+perl "$GRABAR" Instalar_TP I "Archivos procesados: /$PROCDIR/"
+perl "$GRABAR" Instalar_TP I "Reportes de salida: /$REPODIR/"
+perl "$GRABAR" Instalar_TP I "Logs de auditoria del Sistema: $LOGDIR/<comando>.$LOGEXT"
+perl "$GRABAR" Instalar_TP I "Tamaño máximo para los archivos de log del sistema: $LOGSIZE Kb"
+perl "$GRABAR" Instalar_TP I "Estado de la instalacion: LISTA" 
 if [[ $Instalacion_previa == 0 ]]; then
 	Pregunta_sn "Esta seguro de que desea estos path?(si/no)"  
 	if [[ "$?" == 0 ]]; then
@@ -481,4 +487,4 @@ LOGDIR=$LOGDIR=$USER=$fecha
 LOGEXT=$LOGEXT=$USER=$fecha
 LOGSIZE=$LOGSIZE=$USER=$fecha" >> "$CONFDIR"/Instalar_TP.conf
 echo "Intalacion CONCLUIDA"
-echo "Intalacion CONCLUIDA" >> "$CONFDIR"/Instalar_TP.log
+perl "$GRABAR" Instalar_TP I "Intalacion CONCLUIDA" 
