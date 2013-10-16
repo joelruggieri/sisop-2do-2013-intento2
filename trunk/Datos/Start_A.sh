@@ -49,7 +49,7 @@ function main {
 	 fi
 	 if  [ ! -f "$archivo" ] ; then 
 		if [ $params -gt 1 ]; then
-			perl Grabar_L.pl $2 $3 "No se encontro el comando '$1'"
+			perl Grabar_L.pl $2 $3 "No se encontro el comando $1"
 		fi					
 	 	#echo "Nombre de comando invalido"
 	 else
@@ -65,12 +65,12 @@ function main {
 			fi
 			#echo "Arrancado el comando"
 			if [ $params -gt 1 ]; then
-				perl Grabar_L.pl $2 $3 "Se ejecuta el comando '$1'"
+				perl Grabar_L.pl $2 $3 "Se ejecuta el comando $1"
 			fi
 								
 		 else
 			if [ $params -gt 1 ]; then
-				perl Grabar_L.pl $2 $3 "El comando '$1' ya se encuentra corriendo"
+				perl Grabar_L.pl $2 $3 "El comando $1 ya se encuentra corriendo"
 			fi		
 		 fi
 	 fi
@@ -78,4 +78,4 @@ function main {
 
 }
 
-main
+main $@
