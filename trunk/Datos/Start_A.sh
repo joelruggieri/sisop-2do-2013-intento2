@@ -35,8 +35,9 @@ function existeVariable { # $1: Nombre de variable
 }
 
 function main {
- #echo $params
- if  [ $params -ne 3 ] && [ $params -ne 1 ]; then
+ archivo="$1"
+ extension=$(echo $archivo | sed 's/.*\(\..*\)$/\1/')
+ if  [ $params -ne 3 ] && [ $params -ne 1 ] && [ $extension != ".pl" ]; then
 	echo "Numero incorrecto de parametros"
  else
 
@@ -51,7 +52,7 @@ function main {
 	 
 	 declare local direccion="$GRUPO"/"$BINDIR"/"$archivo"
 	 if  [ ! -f "$direccion" ] ; then 
-		if [ $params -gt 1 ]; then
+		if [ $params -gt 1 ] && [ "$archivo" != "Imprimir_A.pl" ]; then
 			perl "$GRABAR" $2 $3 "No se encontro el comando $1"
 		fi					
 	 	#echo "Nombre de comando invalido"
@@ -61,18 +62,25 @@ function main {
 			extension=$(echo $archivo | sed 's/.*\(\..*\)$/\1/') 			
 			
 			if [ $extension == ".pl" ]; then
-				perl "$direccion"
+				declare local mis_param=""
+				for param in $@
+				do
+					if [ "$param" != "$1" ]; then
+						mis_param="$mis_param $param"
+					fi
+				done
+				perl "$direccion" $mis_param
 			else
 				#echo "$extension"
 				"$archivo" & > /dev/null 	
 			fi
 			#echo "Arrancado el comando"
-			if [ $params -gt 1 ]; then
+			if [ $params -gt 1 ] && [ "$archivo" != "Imprimir_A.pl" ]; then
 				perl "$GRABAR" $2 $3 "Se ejecuta el comando $1"
 			fi
 								
 		 else
-			if [ $params -gt 1 ]; then
+			if [ $params -gt 1 ] && [ "$archivo" != "Imprimir_A.pl" ]; then
 				perl "$GRABAR" $2 $3 "El comando $1 ya se encuentra corriendo"
 			fi		
 		 fi

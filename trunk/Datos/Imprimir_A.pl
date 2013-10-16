@@ -238,7 +238,7 @@ sub recorrerListaInvitados{
 		
 
 sub evaluarOpcionUsuarioListado{
-		$imprimir = "Elja una opcion: ";
+		$imprimir = "Elija una opcion (-s para salir): ";
 		imprimirAPantalla($imprimir);
 		$opcion = <STDIN>;
 		chomp($opcion);
@@ -265,7 +265,7 @@ sub generarListaEventos{
 		$result = "Error al leer el archivo de reservas";
 		
 	} else {
-		
+		print "as\n";
 		while ($linea=<RESERVAS>){
 			@data = split(";", $linea);
 			my $clave = "$data[1]-$data[2]-$data[3]-$data[5]";
@@ -279,9 +279,10 @@ sub generarListaEventos{
 			}
 			
 		}
+		close(RESERVAS);
 	}
 	    
-	    close(RESERVAS);	
+	    	
 
 	$return = $result;
 }
@@ -612,25 +613,29 @@ sub obtenerComboID {
 	chomp($comboID);
 	my($encontrado)=0;
 	
-	open(COMBOS, "<$PROCDIR"."/".'combos.dis') || die "Error: no se pudo abrir combos.dis";
-	@array = <COMBOS>;
-	
-	while (!$encontrado) {
-		# Asigna al arreglo todos los registros del archivo.
-		foreach (@array){
-			$i=index($_,"$comboID"); # busca el string “print”
-			if ($i > -1){
-				$encontrado = 1;
+	if(!open(COMBOS, "<$PROCDIR"."/".'combos.dis')){
+		print "Error: no se pudo abrir combos.dis";
+		exit 1;
+	} else {
+		@array = <COMBOS>;
+		
+		while (!$encontrado) {
+			# Asigna al arreglo todos los registros del archivo.
+			foreach (@array){
+				$i=index($_,"$comboID"); # busca el string “print”
+				if ($i > -1){
+					$encontrado = 1;
+				}
+			}
+			if (!$encontrado) {
+				print "No es un combo valido, vuela a ingresar:\n";
+				$comboID = <STDIN>;
+				chomp($comboID);
 			}
 		}
-		if (!$encontrado) {
-			print "No es un combo valido, vuela a ingresar:\n";
-			$comboID = <STDIN>;
-			chomp($comboID);
-		}
+		$return = $comboID
 	}
 	
-	$return = $comboID
 }
 
 sub procesarRegistroDelCombo {
@@ -673,15 +678,19 @@ sub procesarRegistroDelCombo {
 
 sub procesarRegistroCombo {
 	my($comboID, $impresora) = @_;
-
-	open(RESERVAS, "<$PROCDIR"."/".'reservas.ok') || die "Error: no se pudo abrir reservas.ok";
-	@array = <RESERVAS>;
 	
-	# Asigna al arreglo todos los registros del archivo.
-	foreach (@array){
-		$i=index($_,"$comboID"); # busca el string “print”
-		if ($i > -1){
-			procesarRegistroDelCombo("$_", $impresora);
+	if(!open(RESERVAS, "<$PROCDIR"."/".'reservas.ok')){
+		print "Error al leer el archivo de reservas.ok";
+		exit 1;
+	} else {
+		@array = <RESERVAS>;
+		
+		# Asigna al arreglo todos los registros del archivo.
+		foreach (@array){
+			$i=index($_,"$comboID"); # busca el string “print”
+			if ($i > -1){
+				procesarRegistroDelCombo("$_", $impresora);
+			}
 		}
 	}
 }
