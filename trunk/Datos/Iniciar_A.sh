@@ -134,7 +134,7 @@ function setearEntorno {
 	
 	conseguirVariable GRUPO
 	conseguirVariable BINDIR
-	if [[ $retorno -eq 0 ]]; then PATH=$PATH:"$GRUPO/$BINDIR"; fi
+	if [[ $retorno -eq 0 ]]; then PATH="$PATH":"$GRUPO"/"$BINDIR"; fi
 	conseguirVariable CONFDIR
 	conseguirVariable MAEDIR
 	conseguirVariable ARRIDIR
