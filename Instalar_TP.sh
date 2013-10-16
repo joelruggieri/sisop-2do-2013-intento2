@@ -146,20 +146,6 @@ function Verificar_faltantes {
 			ERROR=1
 		fi
 	fi
-	if [[ ! -f "$MAINDIR/$BINDIR/diferenciaDias.pl" ]]; then
-		Faltantes="$Faltantes 
-		diferenciaDias.pl"
-		if [[ ! -f  "$MAINDIR/Datos/diferenciaDias.pl" ]]; then
-			ERROR=1
-		fi
-	fi
-	if [[ ! -f "$MAINDIR/$BINDIR/Imprimir.pl" ]]; then
-		Faltantes="$Faltantes 
-		Imprimir.pl"
-		if [[ ! -f  "$MAINDIR/Datos/Imprimir.pl" ]]; then
-			ERROR=1
-		fi
-	fi
 	if [[ ! -f "$MAINDIR/$BINDIR/Imprimir_A.pl" ]]; then
 		Faltantes="$Faltantes 
 		Imprimir_A.pl"

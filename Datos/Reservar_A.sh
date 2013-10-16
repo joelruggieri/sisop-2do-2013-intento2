@@ -63,7 +63,6 @@ function pasoFechaLimiteAnticipacion {
 	# 2013 lo paso a 13
 	local anioFuncionCorto=`echo $anioFuncion | sed 's/.*\([0-9]\)\([0-9]\)$/\1\2/'`
 	
-	#diferencia=`perl diferenciaDias.pl "$anioFuncion-$diaFuncion-$mesFuncion" "$anioActual-$diaActual-$mesActual"`
 	diferencia=`echo $"(( $(date --date="$anioFuncionCorto$mesFuncion$diaFuncion" +%s) - $(date --date="$anioActualCorto$mesActual$diaActual" +%s) ))/(60*60*24)"|bc`
 	#echo $diferencia
 	
@@ -72,35 +71,6 @@ function pasoFechaLimiteAnticipacion {
 	fi
 	
 	return 1
-	
-	# Si hay problemas usar: echo $"(( $(date --date="031122" +%s) - $(date --date="021020" +%s) ))/(60*60*24)"|bc
-	# ymd
-	# echo $"(( $(date --date="$anioFuncionCorto$mesFuncion$diaFuncion" +%s) - $(date --date="$anioActualCorto$mesActual$diaActual" +%s) ))/(60*60*24)"|bc
-	
-	#local diaLimite="10#$1"
-	#local mesLimite="10#$2"
-	#local anioLimite="10#$3"
-	
-	#contador=$DIAS_ANTICIPACION
-	#while [[ $contador -gt 0 ]]; do
-	#	diaLimite="10#$(($diaLimite-1))"
-	#	if [[ diaLimite -eq 0 ]]; then
-	#		diaLimite=$DIAS_EN_MES
-	#		mesLimite="10#$(($mesLimite-1))"
-	#		if [[ mesLimite -eq 0 ]]; then
-	#			mesLimite=$MESES_EN_ANIO
-	#			anioLimite="10#$(($anioLimite-1))"
-	#		fi
-	#		echo $mesLimite
-	#	fi
-	#	contador=$(($contador-1))
-	#	#echo $contador
-	#done
-	
-	#echo
-	#echo $diaLimite
-	#echo $mesLimite
-	#echo $anioLimite
 }
 
 function esHoraValida {
@@ -230,23 +200,6 @@ function generarRegistroOk {
 	correo=`echo $nombreArchivo | cut -d "-" -f 2`
 	fecha=`date +%d/%m/%Y-%H:%M`
 	
-	#echo "--inicio registro Ok--"
-	#echo $idObra
-	#echo $nombreObra
-	#echo $diaFuncion/$mesFuncion/$anioFuncion
-	#echo $horaFuncion
-	#echo $minutosFuncion
-	#echo $idSala
-	#echo $nombreSala
-	#echo $butacasPedidas
-	#echo $comboID
-	#echo $refIntSolicitante
-	#echo $butacasPedidas
-	#echo $correo
-	#echo $USER
-	#echo $fecha
-	#echo "--fin registro Ok--"
-	
 	# Escribo el archivo reservas.ok
 	echo "$idObra;$nombreObra;$diaFuncion/$mesFuncion/$anioFuncion;$horaFuncion:$minutosFuncion;$idSala;$nombreSala;$butacasPedidas;$comboID;$refIntSolicitante;$butacasPedidas;$correo;$USER;$fecha" >> "$GRUPO"/"$PROCDIR"/"reservas.ok"
 	
@@ -294,21 +247,6 @@ function generarRegistroNok {
 	
 	correo=`echo $nombreArchivo | cut -d "-" -f 2`
 	fecha=`date +%d/%m/%Y-%H:%M`
-	
-	#echo "--Inicio Registro Nok--"
-	#echo $refIntSolicitante
-	#echo $diaFuncion/$mesFuncion/$anioFuncion
-	#echo $horaFuncion
-	#echo $minutosFuncion
-	#echo $nroFila
-	#echo $nroButaca
-	#echo $motivo
-	#echo $idSala
-	#echo $idObra
-	#echo $correo
-	#echo $USER
-	#echo $fecha
-	#echo "--fin Registro Nok--"
 	
 	echo "$refIntSolicitante;$diaFuncion/$mesFuncion/$anioFuncion;$horaFuncion:$minutosFuncion;$nroFila;$nroButaca;$butacasSolicitadas;$motivo;$idSala;$idObra;$correo;$USER;$fecha" >> "$GRUPO"/"$PROCDIR"/"reservas.nok"
 	
@@ -540,27 +478,6 @@ function verificarAmbiente {
 }
 
 # Cuerpo principal.
-
-# TEMPORAL:Defino el path hasta que lo reciba del iniciar
-#ACEPDIR="/home/nicolas/Escritorio/grupo_tres/aceptados"
-#RECHDIR="/home/nicolas/Escritorio/grupo_tres/rechazados"
-#PROCDIR="/home/nicolas/Escritorio/grupo_tres/procesados"
-
-#~ ACEPDIR="/home/maxi/Desktop/grupo_tres/aceptados"
-#~ RECHDIR="/home/maxi/Desktop/grupo_tres/rechazados"
-#~ PROCDIR="/home/maxi/Desktop/grupo_tres/procesados"
-#~ MAEDIR="/home/maxi/Desktop/grupo_tres/maestros"
-#~ 
-#~ LOGEXT="log"
-#~ LOGDIR="/home/maxi/Desktop/grupo_tres/conf/log_dir"
-#~ CONFDIR="/home/maxi/Desktop/grupo_tres/conf"
-#~ LOGSIZE="1000"	 #representado en Kb
-#~ 
-#~ export LOGEXT
-#~ export LOGDIR
-#~ export CONFDIR
-#~ export LOGSIZE
-
 GRABAR="$GRUPO"/"$BINDIR"/"Grabar_L.pl"
 MOVER="$GRUPO"/"$BINDIR"/"Mover_A.pl"
 
