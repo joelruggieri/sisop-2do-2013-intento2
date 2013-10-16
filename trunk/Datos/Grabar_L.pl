@@ -1,14 +1,7 @@
-#variable ambiente LOGTEXT LOGDIR CONFDIR LOGSIZE 
-#$variable=$ENV{'v_Ambiente_exportada'};
+#variable ambiente LOGTEXT LOGDIR CONFDIR LOGSIZE
 
 #!/usr/bin/perl
 
-
-
-#~ $LOGEXT="log";
-#~ $LOGDIR="/home/nicolas/SistemasOperativos/Practica/a/qq";
-#~ $CONFDIR="/home/nicolas/SistemasOperativos/Practica/a"; # no es una variable ambiente es $grupo/conf
-#~ $LOGSIZE="1"; #representado en Kb
 
 $LOGEXT = $ENV{'LOGEXT'};
 $LOGDIR = $ENV{'LOGDIR'};

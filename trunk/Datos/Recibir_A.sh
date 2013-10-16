@@ -1,11 +1,4 @@
 #!/bin/bash
-#ARRIDIR="/home/maxi/Prueba/Arribos"
-#ACEPDIR="/home/maxi/Prueba/Aceptados"
-#REPODIR="/home/maxi/Prueba/Repositorio"
-#RECHDIR="/home/maxi/Prueba/Rechazados"
-#MAEDIR="/home/maxi/Prueba/Maestros/"
-
-#DEMONIO_RUTA="/home/maxi/Prueba/demonio.sh"
 
 ARCHIVO_SALAS="salas.mae"
 ARCHIVO_OBRAS="obras.mae"
