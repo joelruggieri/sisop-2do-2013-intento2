@@ -2,6 +2,7 @@
  #TODO asignar el path donde estan los scripts
  pathMadre=$GRUPO
  params=$# 
+ GRABAR="$GRUPO"/"$BINDIR"/"Grabar_L.pl"
 
 function estaAmbienteInicializado {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
@@ -47,9 +48,11 @@ function main {
 		echo "No se encuentra inicializado el ambiente"
 		return 1
 	 fi
-	 if  [ ! -f "$archivo" ] ; then 
+	 
+	 declare local direccion="$GRUPO"/"$BINDIR"/"$archivo"
+	 if  [ ! -f "$direccion" ] ; then 
 		if [ $params -gt 1 ]; then
-			perl Grabar_L.pl $2 $3 "No se encontro el comando $1"
+			perl "$GRABAR" $2 $3 "No se encontro el comando $1"
 		fi					
 	 	#echo "Nombre de comando invalido"
 	 else
@@ -58,19 +61,19 @@ function main {
 			extension=$(echo $archivo | sed 's/.*\(\..*\)$/\1/') 			
 			
 			if [ $extension == ".pl" ]; then
-				perl $archivo
+				perl "$direccion"
 			else
 				#echo "$extension"
-				$archivo & > /dev/null 	
+				"$archivo" & > /dev/null 	
 			fi
 			#echo "Arrancado el comando"
 			if [ $params -gt 1 ]; then
-				perl Grabar_L.pl $2 $3 "Se ejecuta el comando $1"
+				perl "$GRABAR" $2 $3 "Se ejecuta el comando $1"
 			fi
 								
 		 else
 			if [ $params -gt 1 ]; then
-				perl Grabar_L.pl $2 $3 "El comando $1 ya se encuentra corriendo"
+				perl "$GRABAR" $2 $3 "El comando $1 ya se encuentra corriendo"
 			fi		
 		 fi
 	 fi

@@ -17,14 +17,15 @@ $GRUPO = $ENV{'GRUPO'};
 if(defined $ENV{'LOGSIZE'}) {
 	$LOGSIZE = $ENV{'LOGSIZE'};
 } else {
-	$LOGSIZE="1"; #representado en Kb
+	$LOGSIZE="1000"; #representado en Kb
 }
-$MAINDIR = $ENV{'MAINDIR'}; # para Instalar_TP e Iniciar_A previo a la definicion de GRUPO
+$MAINDIR = $ENV{'MAINDIR'}; # usado solo para Instalar_TP e Iniciar_A previo a la definicion de GRUPO
 
 &main();
 
 sub main{
 	%tiposMsj= ("I", 1, "W", 1, "E",1,"SE",1);
+	$cantidad_lineas=30;
 	&validarEntrada();
 	exit 0;
 }
@@ -44,7 +45,7 @@ sub lineasLog{
 }
 sub truncarLog{
 	&lineasLog();
-	my $iniciar_lineas = $#lineas - 4;
+	my $iniciar_lineas = $#lineas - $cantidad_lineas;
 	my $msjExcedido = "LOG EXCEDIDO\n";
 	
 	if ( not open (SALIDA,">$direccion") ){
@@ -114,7 +115,7 @@ sub modoEscritura{
 
 sub verificarParametros{
 	
-	if ($comando eq "Instalar_tp"){		
+	if ($comando eq "Instalar_TP"){		
 		$direccion = "$MAINDIR"."/"."$CONFDIR"."/"."Instalar_TP.log";		
  	}
  	elsif ($comando eq "Iniciar_A"){		
