@@ -19,21 +19,16 @@ RECHAZADOS="$GRUPO"/"$RECHDIR"
 ACEPTADOS="$GRUPO"/"$ACEPDIR"
 REPOSITORIO="$GRUPO"/"$REPODIR"
 
-direccionActual=`pwd`
-cd "$GRUPO"
-cd "$ARRIDIR"
-
 while (true)
 do
 	direccionActual=`pwd`
 	cd "$GRUPO"
 	cd "$ARRIDIR"
-	
-	echo "$PATH"
-	
+	elementos=`ls`
+	cd "$direccionActual"
 	
 	perl Grabar_L.pl Recibir_A I "Ciclo Numero $NUMERO_DE_CICLO"
-	for archivo in `ls`
+	for archivo in $elementos
 	do
 		RUTA_ARCHIVO="$GRUPO"/"$ARRIDIR"/"$archivo"
 		TIPO_DE_TEXTO="`file $RUTA_ARCHIVO`"
@@ -101,7 +96,6 @@ do
 			fi
 		fi
  	fi	
-	cd "$direccionActual"
 	sleep $TIEMPO
 	let NUMERO_DE_CICLO=NUMERO_DE_CICLO+1
 done

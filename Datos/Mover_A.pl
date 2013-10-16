@@ -151,11 +151,6 @@ sub validarEntrada{
 	if ($#ARGV < 1 or $#ARGV > 2 ){
 		$tipoMsj="SE";
 		$ERROR="La cantidad de parametros no es la esperada\n";
-		
-		print "$ARGV[0]\n";
-		print "$ARGV[1]\n";
-		print "$ARGV[2]\n";
-		
 		&salir();
 	}
 	
