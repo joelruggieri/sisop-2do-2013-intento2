@@ -9,3 +9,7 @@ Segundo parametro: tipo de mensaje. (opcional)
 Aclaracion: si el tipo de mensaje es distinto a estos ultimos no los toma
 
 Tercer Parametro: Mensaje
+
+Se llama, desde consola estando en el directorio donde se encuentra el archivo Grabar_L.pl de la siguiente manera.
+
+perl Grabar_L.pl comando tipoMensaje mensaje

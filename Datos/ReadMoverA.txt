@@ -1,6 +1,7 @@
 
 Primer Parametro: origen.
 	El origen contiene el archivo a mover.
+	
 Segundo Parametro: destino.
 
 Tercer Parametro: comando que lo invoca.
@@ -10,6 +11,10 @@ Tercer Parametro: comando que lo invoca.
 	Iniciar_A.
 	Recibir_A.
 	Reservar_A.
+	
+Se ejecuta de la siguiente manera.
+
+perl Mover_A.pl origen destino comando
 	
 	
 
