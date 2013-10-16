@@ -74,6 +74,7 @@ function Pregunta_sn {
 	while [ "$Acepta" != "si" -a "$Acepta" != "no" ]
 	do
 		read Acepta
+		Acepta=`echo "$Acepta" | tr '[:upper:]' '[:lower:]'`
 		if [ "$Acepta" != "si" -a "$Acepta" != "no" ]; then
 			echo "No se ingreso una opcion valida. Acepta? si - No"
 		fi
@@ -117,133 +118,105 @@ function Verificar_faltantes {
 	echo "- $linea. Archivos:"
 	echo "- $linea. Archivos:" >> "$CONFDIR"/Instalar_TP.log
 	conseguirVariable BINDIR
-		#verifico cada archivo
-		if [[ ! -f "$MAINDIR/$BINDIR/Grabar_L.pl" ]]; then
-			Faltantes="$Faltantes 
-			Grabar_L.pl"
-			if [[ ! -f  "$MAINDIR/Datos/Grabar_L.pl" ]]; then
-				ERROR=1
-			fi
-		else
-			echo "/$BINDIR/Grabar_L.pl" 
-			echo "/$BINDIR/Grabar_L.pl" >> "$CONFDIR"/Instalar_TP.log
+	#verifico cada archivo
+	if [[ ! -f "$MAINDIR/$BINDIR/Grabar_L.pl" ]]; then
+		Faltantes="$Faltantes 
+		Grabar_L.pl"
+		if [[ ! -f  "$MAINDIR/Datos/Grabar_L.pl" ]]; then
+			ERROR=1
 		fi
-		if [[ ! -f "$MAINDIR/$BINDIR/Mover_A.pl" ]]; then
-			Faltantes="$Faltantes 
-			Mover_A.pl"
-			if [[ ! -f  "$MAINDIR/Datos/Mover_A.pl" ]]; then
-				ERROR=1
-			fi
-		else
-			echo "/$BINDIR/Mover_A.pl" 
-			echo "/$BINDIR/Mover_A.pl" >> "$CONFDIR"/Instalar_TP.log
+	fi
+	if [[ ! -f "$MAINDIR/$BINDIR/Mover_A.pl" ]]; then
+		Faltantes="$Faltantes 
+		Mover_A.pl"
+		if [[ ! -f  "$MAINDIR/Datos/Mover_A.pl" ]]; then
+			ERROR=1
 		fi
-		if [[ ! -f "$MAINDIR/$BINDIR/Recibir_A.sh" ]]; then
-			Faltantes="$Faltantes 
-			Recibir_A.sh"
-			if [[ ! -f  "$MAINDIR/Datos/Recibir_A.sh" ]]; then
-				ERROR=1
-			fi
-		else
-			echo "/$BINDIR/Recibir_A.sh" 
-			echo "/$BINDIR/Recibir_A.sh" >> "$CONFDIR"/Instalar_TP.log
+	fi
+	if [[ ! -f "$MAINDIR/$BINDIR/Recibir_A.sh" ]]; then
+		Faltantes="$Faltantes 
+		Recibir_A.sh"
+		if [[ ! -f  "$MAINDIR/Datos/Recibir_A.sh" ]]; then
+			ERROR=1
 		fi
-		if [[ ! -f "$MAINDIR/$BINDIR/Reservar_A.sh" ]]; then
-			Faltantes="$Faltantes 
-			Reservar_A.sh "
-			if [[ ! -f  "$MAINDIR/Datos/Reservar_A.sh" ]]; then
-				ERROR=1
-			fi
-		else
-			echo "/$BINDIR/Reservar_A.sh"
-			echo "/$BINDIR/Reservar_A.sh" >> "$CONFDIR"/Instalar_TP.log
+	fi
+	if [[ ! -f "$MAINDIR/$BINDIR/Reservar_A.sh" ]]; then
+		Faltantes="$Faltantes 
+		Reservar_A.sh "
+		if [[ ! -f  "$MAINDIR/Datos/Reservar_A.sh" ]]; then
+			ERROR=1
 		fi
-		if [[ ! -f "$MAINDIR/$BINDIR/diferenciaDias.pl" ]]; then
-			Faltantes="$Faltantes 
-			diferenciaDias.pl"
-			if [[ ! -f  "$MAINDIR/Datos/diferenciaDias.pl" ]]; then
-				ERROR=1
-			fi
-		else
-			echo "/$BINDIR/diferenciaDias.pl" 
-			echo "/$BINDIR/diferenciaDias.pl" >> "$CONFDIR"/Instalar_TP.log
+	fi
+	if [[ ! -f "$MAINDIR/$BINDIR/diferenciaDias.pl" ]]; then
+		Faltantes="$Faltantes 
+		diferenciaDias.pl"
+		if [[ ! -f  "$MAINDIR/Datos/diferenciaDias.pl" ]]; then
+			ERROR=1
 		fi
-		if [[ ! -f "$MAINDIR/$BINDIR/Imprimir.pl" ]]; then
-			Faltantes="$Faltantes 
-			Imprimir.pl"
-			if [[ ! -f  "$MAINDIR/Datos/Imprimir.pl" ]]; then
-				ERROR=1
-			fi
-		else
-			echo "/$BINDIR/Imprimir.pl" 
-			echo "/$BINDIR/Imprimir.pl" >> "$CONFDIR"/Instalar_TP.log
+	fi
+	if [[ ! -f "$MAINDIR/$BINDIR/Imprimir.pl" ]]; then
+		Faltantes="$Faltantes 
+		Imprimir.pl"
+		if [[ ! -f  "$MAINDIR/Datos/Imprimir.pl" ]]; then
+			ERROR=1
 		fi
-		if [[ ! -f "$MAINDIR/$BINDIR/Imprimir_A.pl" ]]; then
-			Faltantes="$Faltantes 
-			Imprimir_A.pl"
-			if [[ ! -f  "$MAINDIR/Datos/Imprimir_A.pl" ]]; then
-				ERROR=1
-			fi
-		else
-			echo "/$BINDIR/Imprimir_A.pl" 
-			echo "/$BINDIR/Imprimir_A.pl" >> "$CONFDIR"/Instalar_TP.log
+	fi
+	if [[ ! -f "$MAINDIR/$BINDIR/Imprimir_A.pl" ]]; then
+		Faltantes="$Faltantes 
+		Imprimir_A.pl"
+		if [[ ! -f  "$MAINDIR/Datos/Imprimir_A.pl" ]]; then
+			ERROR=1
 		fi
-		if [[ ! -f "$MAINDIR/$BINDIR/Iniciar_A.sh" ]]; then
-			Faltantes="$Faltantes 
-			Imprimir_A.pl"
-			if [[ ! -f  "$MAINDIR/Datos/Iniciar_A.sh" ]]; then
-				ERROR=1
-			fi
-		else
-			echo "/$BINDIR/Iniciar_A.sh" 
-			echo "/$BINDIR/Iniciar_A.sh" >> "$CONFDIR"/Instalar_TP.log
+	fi
+	if [[ ! -f "$MAINDIR/$BINDIR/Iniciar_A.sh" ]]; then
+		Faltantes="$Faltantes 
+		Imprimir_A.pl"
+		if [[ ! -f  "$MAINDIR/Datos/Iniciar_A.sh" ]]; then
+			ERROR=1
 		fi
-		if [[ ! -f "$MAINDIR/$BINDIR/Start_A.sh" ]]; then
-			Faltantes="$Faltantes 
-			Start_A.sh"
-			if [[ ! -f  "$MAINDIR/Datos/Start_A.sh" ]]; then
-				ERROR=1
-			fi
-		else
-			echo "/$BINDIR/Start_A.sh" 
-			echo "/$BINDIR/Start_A.sh" >> "$CONFDIR"/Instalar_TP.log
+	fi
+	if [[ ! -f "$MAINDIR/$BINDIR/Start_A.sh" ]]; then
+		Faltantes="$Faltantes 
+		Start_A.sh"
+		if [[ ! -f  "$MAINDIR/Datos/Start_A.sh" ]]; then
+			ERROR=1
 		fi
-		if [[ ! -f "$MAINDIR/$BINDIR/Stop_A.sh" ]]; then
-			Faltantes="$Faltantes 
-			Start_A.sh"
-			if [[ ! -f  "$MAINDIR/Datos/Stop_A.sh" ]]; then
-				ERROR=1
-			fi
-		else
-			echo "/$BINDIR/Stop_A.sh" 
-			echo "/$BINDIR/Stop_A.sh" >> "$CONFDIR"/Instalar_TP.log
+	fi
+	if [[ ! -f "$MAINDIR/$BINDIR/Stop_A.sh" ]]; then
+		Faltantes="$Faltantes 
+		Start_A.sh"
+		if [[ ! -f  "$MAINDIR/Datos/Stop_A.sh" ]]; then
+			ERROR=1
 		fi
+	fi
 
-	#verifico cada archivo MAEDIR
-		conseguirVariable MAEDIR
-		if [[ ! -f "$MAINDIR/$MAEDIR/obras.mae" ]]; then
-			Faltantes="$Faltantes 
-			obras.mae"
-			if [[ ! -f  "$MAINDIR/Datos/obras.mae" ]]; then
-				ERROR=1
-			fi
-		else
-			echo "/$MAEDIR/obras.mae" 
-			echo "/$MAEDIR/obras.mae" >> "$CONFDIR"/Instalar_TP.log
+#verifico cada archivo MAEDIR
+	conseguirVariable MAEDIR
+	if [[ ! -f "$MAINDIR/$MAEDIR/obras.mae" ]]; then
+		Faltantes="$Faltantes 
+		obras.mae"
+		if [[ ! -f  "$MAINDIR/Datos/obras.mae" ]]; then
+			ERROR=1
 		fi
-		if [[ ! -f "$MAINDIR/$MAEDIR/salas.mae" ]]; then
-			Faltantes="$Faltantes 
-			salas.mae"
-			if [[ ! -f  "$MAINDIR/Datos/salas.mae" ]]; then
-				ERROR=1
-			fi
-		else
-			echo "/$MAEDIR/salas.mae"
-			echo "/$MAEDIR/salas.mae" >> "$CONFDIR"/Instalar_TP.log
+	fi
+	if [[ ! -f "$MAINDIR/$MAEDIR/salas.mae" ]]; then
+		Faltantes="$Faltantes 
+		salas.mae"
+		if [[ ! -f  "$MAINDIR/Datos/salas.mae" ]]; then
+			ERROR=1
 		fi
+	fi
+	conseguirVariable PROCDIR
+	if [[ ! -f "$MAINDIR/$PROCDIR/combos.dis" ]]; then
+		Faltantes="$Faltantes 
+		combos.dis"
+		if [[ ! -f  "$MAINDIR/Datos/combos.dis" ]]; then
+			ERROR=1
+		fi
+	fi
 
 	#Listo confdir
-	ls "$CONFDIR"
+
 
 	#guardo el resto de los valores ya configurados
 	conseguirVariable ARRIDIR
@@ -251,11 +224,29 @@ function Verificar_faltantes {
 	conseguirVariable ACEPDIR
 	conseguirVariable RECHDIR
 	conseguirVariable REPODIR
-	conseguirVariable PROCDIR
 	conseguirVariable LOGDIR
 	conseguirVariable LOGEXT
 	conseguirVariable LOGSIZE
-		
+	#LISTO DIRECTORIOS.
+	echo
+	echo "/$BINDIR/ Archivos:"
+	ls "$BINDIR"
+	echo "/$BINDIR/ Archivos:" >> "$CONFDIR"/Instalar_TP.log
+	ls "$BINDIR" >> "$CONFDIR"/Instalar_TP.log
+
+	echo
+	echo "/$MAEDIR/ Archivos:"
+	ls "$MAEDIR" >> "$CONFDIR"/Instalar_TP.log
+	echo "/$MAEDIR/ Archivos:" >> "$CONFDIR"/Instalar_TP.log
+	ls "$MAEDIR"
+	echo
+	echo "/$CONFDIR/ Archivos:"
+	ls "$CONFDIR"
+	echo "/$CONFDIR/ Archivos:" >> "$CONFDIR"/Instalar_TP.log
+	ls "$CONFDIR" >> "$CONFDIR"/Instalar_TP.log
+
+	echo
+ 		
 	#imprimo faltantes
 	echo "Faltan: $Faltantes"
 	if [[ "$Faltantes" == "" ]]; then
