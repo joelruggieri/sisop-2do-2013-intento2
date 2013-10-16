@@ -127,14 +127,14 @@ function existeEvento {
 
 	if [[ $(($id%2)) == 0 ]]; then
 		# Si el ID es par, busco en el archivo segun ID de sala
-		status=`grep '^[^;]*;[^;]*;'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';'"$id"';.*' "$PROCDIR/combos.dis"`
+		status=`grep '^[^;]*;[^;]*;'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';'"$id"';.*' "$GRUPO"/"$PROCDIR"/"combos.dis"`
 		if [[ $status ]]; then
 			return 0
 		fi
 		return 1
 	else
 		# Si el ID es impar, busco en el archivo segun el ID de obra
-		status=`grep '^[^;]*;'"$id"';'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';.*' "$PROCDIR/combos.dis"`
+		status=`grep '^[^;]*;'"$id"';'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';.*' "$GRUPO"/"$PROCDIR"/"combos.dis"`
 		if [[ $status ]]; then
 			return 0
 		fi
@@ -156,10 +156,10 @@ function hayDisponibilidad {
 	# Recupero el combo correspondiente
 	if [[ $(($id%2)) == 0 ]]; then
 		# Si el ID es par, busco en el archivo segun ID de sala
-		comboRegistro=`grep '^[^;]*;[^;]*;'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';'"$id"';.*' "$PROCDIR/combos.dis"`
+		comboRegistro=`grep '^[^;]*;[^;]*;'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';'"$id"';.*' "$GRUPO"/"$PROCDIR"/"combos.dis"`
 	else
 		# Si el ID es impar, busco en el archivo segun el ID de obra
-		comboRegistro=`grep '^[^;]*;'"$id"';'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';.*' "$PROCDIR/combos.dis"`
+		comboRegistro=`grep '^[^;]*;'"$id"';'"$diaFuncion"'/'"$mesFuncion"'/'"$anioFuncion"';'"$horaFuncion"':'"$minutosFuncion"';.*' "$GRUPO"/"$PROCDIR"/"combos.dis"`
 	fi
 	
 	comboID=`echo $comboRegistro | cut -d ";" -f 1` 
@@ -401,16 +401,16 @@ function procesarArchivos {
 	
 	for archivo in `ls`;
 	do
-		perl Grabar_L.pl Reservar_A I "Archivo a procesar: $ACEPDIR/$archivo"
+		perl "$GRABAR" Reservar_A I "Archivo a procesar: $ACEPDIR/$archivo"
 		#echo "$archivo"
 		while IFS='' read -r linea || [ -n "$linea" ]; do
 			procesarRegistros "$linea" "$archivo" 
 		done < $archivo
 		# Muevo el archivo a PROCDIR
-		perl Grabar_L.pl Reservar_A I "Moviendo archivo a $PROCDIR"
+		perl "$GRABAR" Reservar_A I "Moviendo archivo a $PROCDIR"
 		declare local direccionOrigen="$GRUPO"/"$ACEPDIR"/"$archivo"
 		declare local direccionDestino="$GRUPO"/"$PROCDIR"
-		perl Mover_A.pl "$direccionOrigen" "$direccionDestino" "Reservar_A"
+		perl "$MOVER" "$direccionOrigen" "$direccionDestino" "Reservar_A"
 	done
 	
 	cd "$direccionActual"
@@ -426,11 +426,11 @@ function revisarArchivosVacios {
 	
 	for i in `find -type f -empty`
 	do
-		perl Grabar_L.pl Reservar_A I "Archivo a procesar: $i"
-		perl Grabar_L.pl Reservar_A I "Archivo $i vacio, se rechaza"
+		perl "$GRABAR" Reservar_A I "Archivo a procesar: $i"
+		perl "$GRABAR" Reservar_A I "Archivo $i vacio, se rechaza"
 		declare local direccionOrigen="$GRUPO"/"$ACEPDIR"/"$i"
 		declare local direccionDestino="$GRUPO"/"$RECHDIR"
-		perl Mover_A.pl "$direccionOrigen" $direccionDestino "Reservar_A"
+		perl "$MOVER" "$direccionOrigen" $direccionDestino "Reservar_A"
 	done
 	
 	cd "$direccionActual"
@@ -468,11 +468,11 @@ function revisarDuplicados {
 		for j in $elementosProcesados;
 		do
 			if [ $i == $j ]; then
-				perl Grabar_L.pl Reservar_A I "Archivo a procesar: $i"
-				perl Grabar_L.pl Reservar_A I "Archivo $i duplicado, se rechaza"
+				perl "$GRABAR" Reservar_A I "Archivo a procesar: $i"
+				perl "$GRABAR" Reservar_A I "Archivo $i duplicado, se rechaza"
 				declare local direccionOrigen="$GRUPO"/"$ACEPDIR"/"$i"
 				declare local direccionDestino="$GRUPO"/"$RECHDIR"
-				perl Mover_A.pl "$direccionOrigen" "$direccionDestino" "Reservar_A"
+				perl "$MOVER" "$direccionOrigen" "$direccionDestino" "Reservar_A"
 			fi
 		done
 	done
@@ -483,9 +483,9 @@ function revisarDuplicados {
 
 function filalizarProceso {
 	
-	perl Grabar_L.pl Reservar_A I "La cantidad de registros en reservas.ok grabados es $regOk"
-	perl Grabar_L.pl Reservar_A I "La cantidad de registros en reservas.nok grabados es $regNok"
-	perl Grabar_L.pl Reservar_A I "Actualizacion del archivo disponibilidad"
+	perl "$GRABAR" Reservar_A I "La cantidad de registros en reservas.ok grabados es $regOk"
+	perl "$GRABAR" Reservar_A I "La cantidad de registros en reservas.nok grabados es $regNok"
+	perl "$GRABAR" Reservar_A I "Actualizacion del archivo disponibilidad"
 	
 	# Actualizo el archivo combo.dis
 	for idCombo in "${!mapaDispo[@]}"
@@ -495,14 +495,14 @@ function filalizarProceso {
 		sed -i 's/^\('"$idCombo"';[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;\)[^;]*\(;[^;]*\)/\1'${mapaDispo[$idCombo]}'\2/' "$GRUPO"/"$PROCDIR"/"combos.dis"
 	done
 	
-	perl Grabar_L.pl Reservar_A I "Fin de Reservar_A"
+	perl "$GRABAR" Reservar_A I "Fin de Reservar_A"
 }
 
 function inicializarProceso {
 	cantidadArchivos=`ls "$GRUPO"/"$ACEPDIR" | wc -l`
 	#echo "Log:Inicio de Reservar_A. La cantidad de archivos en el directorio es $cantidadArchivos"
-	perl Grabar_L.pl Reservar_A I "Inicio de Reservar_A"
-	perl Grabar_L.pl Reservar_A I "La cantidad de archivos en $ACEPDIR es $cantidadArchivos"
+	perl "$GRABAR" Reservar_A I "Inicio de Reservar_A"
+	perl "$GRABAR" Reservar_A I "La cantidad de archivos en $ACEPDIR es $cantidadArchivos"
 	
 	# Creo un hash global para la DISPONIBILIDAD
 	declare -A -g mapaDispo
@@ -531,20 +531,23 @@ function verificarAmbiente {
 #RECHDIR="/home/nicolas/Escritorio/grupo_tres/rechazados"
 #PROCDIR="/home/nicolas/Escritorio/grupo_tres/procesados"
 
-ACEPDIR="/home/maxi/Desktop/grupo_tres/aceptados"
-RECHDIR="/home/maxi/Desktop/grupo_tres/rechazados"
-PROCDIR="/home/maxi/Desktop/grupo_tres/procesados"
-MAEDIR="/home/maxi/Desktop/grupo_tres/maestros"
+#~ ACEPDIR="/home/maxi/Desktop/grupo_tres/aceptados"
+#~ RECHDIR="/home/maxi/Desktop/grupo_tres/rechazados"
+#~ PROCDIR="/home/maxi/Desktop/grupo_tres/procesados"
+#~ MAEDIR="/home/maxi/Desktop/grupo_tres/maestros"
+#~ 
+#~ LOGEXT="log"
+#~ LOGDIR="/home/maxi/Desktop/grupo_tres/conf/log_dir"
+#~ CONFDIR="/home/maxi/Desktop/grupo_tres/conf"
+#~ LOGSIZE="1000"	 #representado en Kb
+#~ 
+#~ export LOGEXT
+#~ export LOGDIR
+#~ export CONFDIR
+#~ export LOGSIZE
 
-LOGEXT="log"
-LOGDIR="/home/maxi/Desktop/grupo_tres/conf/log_dir"
-CONFDIR="/home/maxi/Desktop/grupo_tres/conf"
-LOGSIZE="1000"	 #representado en Kb
-
-export LOGEXT
-export LOGDIR
-export CONFDIR
-export LOGSIZE
+GRABAR="$GRUPO"/"$BINDIR"/"Grabar_L.pl"
+MOVER="$GRUPO"/"$BINDIR"/"Mover_A.pl"
 
 verificarAmbiente
 inicializarProceso

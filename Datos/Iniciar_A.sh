@@ -13,22 +13,27 @@ function main {
 	declare local demonioCorriendo=0
 	declare local ID_Recibir_A=-1
 	
+	declare local mi_direccion=`pwd`
+	GRABAR="$mi_direccion"/"Grabar_L.pl"
+	
 	verificarLoguer
 	if [[ $retorno -ne 0 ]]; then return 1; fi
-	perl Grabar_L.pl Iniciar_A I "Comando Iniciar_A Inicio de Ejecución."
+	perl "$GRABAR" Iniciar_A I "Comando Iniciar_A Inicio de Ejecución."
 	existeFicheroConPermisos f "$config" r
 	estaAmbienteInicializado
 	setearEntorno
+	
+	GRABAR="$GRUPO"/"$BINDIR"/"Grabar_L.pl"
 	realizarValidaciones
 	exportarEntorno
 	ejecutarRecibirA
 	logFinal
 	if [[ $retorno -ne 0 ]]; then
-		perl Grabar_L.pl Iniciar_A I "El programa finalizó con errores."
+		perl "$GRABAR" Iniciar_A I "El programa finalizó con errores."
 	else
-		perl Grabar_L.pl Iniciar_A I "El programa finalizó con éxito."
+		perl "$GRABAR" Iniciar_A I "El programa finalizó con éxito."
 	fi
-	perl Grabar_L.pl Iniciar_A I "Comando Iniciar_A Fin de Ejecución."
+	perl "$GRABAR" Iniciar_A I "Comando Iniciar_A Fin de Ejecución."
 	return 0
 }
 
@@ -57,7 +62,9 @@ function rescatarMainDir {
 function verificarLoguer {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	
-	if [ ! -f "./Grabar_L.pl" ]; then
+	echo "$GRABAR"
+	
+	if [ ! -f "$GRABAR" ]; then
 		echo "Loguer 'Grabar_L.pl' inexistente."
 		echo "Por favor, vuelva a instalar el sistema. Para mas informacion, consulte el README correspondiente."
 		retorno=1
@@ -81,16 +88,16 @@ function existeFicheroConPermisos { # $1: tipo de fichero (f o d), $2: fichero, 
 		do
 			if [[ ( "$i" == "r" ) || ( "$i" == "w" ) || ( "$i" == "x" ) ]]; then
 				if [ -"$i" "$2" ]; then
-					perl Grabar_L.pl Iniciar_A I "El $tipo $2 tiene el permiso $i."
+					perl "$GRABAR" Iniciar_A I "El $tipo $2 tiene el permiso $i."
 				else
-					perl Grabar_L.pl Iniciar_A I "El $tipo $2 no tiene el permiso $i , se lo agrega."
+					perl "$GRABAR" Iniciar_A I "El $tipo $2 no tiene el permiso $i , se lo agrega."
 					chmod +"$i" "$2"
 				fi
 			fi
 		done
 	else
-		perl Grabar_L.pl Iniciar_A E "El $tipo $2 es inexistente."
-		perl Grabar_L.pl Iniciar_A E "Por favor, vuelva a instalar el sistema. Para mas informacion, consulte el README correspondiente."
+		perl "$GRABAR" Iniciar_A E "El $tipo $2 es inexistente."
+		perl "$GRABAR" Iniciar_A E "Por favor, vuelva a instalar el sistema. Para mas informacion, consulte el README correspondiente."
 		retorno=1
 		return 1
 	fi
@@ -121,7 +128,7 @@ function estaAmbienteInicializado {
 function existeVariable { # $1: Nombre de variable
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	if [[ ${1:+existe} == "existe" ]]; then
-		perl Grabar_L.pl Iniciar_A E "Ambiente ya inicializado. Si quiere reiniciar, termine su sesión e ingrese nuevamente."
+		perl "$GRABAR" Iniciar_A E "Ambiente ya inicializado. Si quiere reiniciar, termine su sesión e ingrese nuevamente."
 		retorno=1
 		return 1
 	fi
@@ -155,7 +162,7 @@ function conseguirVariable { # $1: Variable
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	declare local vSalida=`grep '^'$1'' "$config" | sed 's@^[^=]*=\([^=]*\)=[^=]*=[^=]*$@\1@'`
 	if [[ "$vSalida" == "" ]]; then
-		perl Grabar_L.pl Iniciar_A E "Registro de $1 inexistente o malformado en el archivo de configuracion."
+		perl "$GRABAR" Iniciar_A E "Registro de $1 inexistente o malformado en el archivo de configuracion."
 		retorno=1
 		return 1
 	fi
@@ -240,15 +247,15 @@ function ejecutarRecibirA {
 	respuesta=${respuesta,,} # lo paso a minusculas
 	
 	if [[ "$respuesta" == "si" ]]; then
-		perl Grabar_L.pl Iniciar_A I "Respuesta positiva del usuario sobre activacion de Recibir_A."
+		perl "$GRABAR" Iniciar_A I "Respuesta positiva del usuario sobre activacion de Recibir_A."
 		activarRecibir
 		comoDetenerRecibir
 	elif [[ "$respuesta" == "no" ]]; then
-		perl Grabar_L.pl Iniciar_A I "Respuesta negativa del usuario sobre activacion de Recibir_A."
+		perl "$GRABAR" Iniciar_A I "Respuesta negativa del usuario sobre activacion de Recibir_A."
 		comoCorrerRecibir
 	else
 		echo "Respuesta invalida."
-		perl Grabar_L.pl Iniciar_A E "Respuesta inválida del usuario sobre activacion de Recibir_A."
+		perl "$GRABAR" Iniciar_A E "Respuesta inválida del usuario sobre activacion de Recibir_A."
 		comoCorrerRecibir
 	fi
 	return $retorno
@@ -268,7 +275,7 @@ function activarRecibir {
 function comoDetenerRecibir {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	declare local mensaje="Para detener el demonio Recibir_A, ejecutar el comando 'Stop_A Recibir_A.sh' sin las comillas."
-	perl Grabar_L.pl Iniciar_A I "$mensaje"
+	perl "$GRABAR" Iniciar_A I "$mensaje"
 	echo "$mensaje"
 	return 0
 }
@@ -277,7 +284,7 @@ function comoDetenerRecibir {
 function comoCorrerRecibir {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	declare local mensaje="Para correr el demonio Recibir_A, ejecutar el comando 'Start_A Recibir_A.sh' sin las comillas."
-	perl Grabar_L.pl Iniciar_A I "$mensaje"
+	perl "$GRABAR" Iniciar_A I "$mensaje"
 	echo "$mensaje"
 	comoDetenerRecibir
 	return 0
@@ -286,12 +293,12 @@ function comoCorrerRecibir {
 # Loguea el listado de archivos del directorio pasado como segundo parametro
 function listarArchivos { # $1: mensaje, $2: directorio
 	if [[ $retorno -ne 0 ]]; then return 1; fi
-	perl Grabar_L.pl Iniciar_A I "$1: $2"
+	perl "$GRABAR" Iniciar_A I "$1: $2"
 	declare local archivo=`ls "$GRUPO/$2" -1`
-	perl Grabar_L.pl Iniciar_A I "	Archivos:"
+	perl "$GRABAR" Iniciar_A I "	Archivos:"
 	for i in $archivo
 	do
-		perl Grabar_L.pl Iniciar_A I "		$i"
+		perl "$GRABAR" Iniciar_A I "		$i"
 	done
 	return 0
 }
@@ -300,21 +307,21 @@ function listarArchivos { # $1: mensaje, $2: directorio
 function logFinal {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	
-	perl Grabar_L.pl Iniciar_A I "TP S07508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 3"
-	listarArchivos "Librería del Sistema" $CONFDIR
-	listarArchivos "Ejecutables" $BINDIR
-	listarArchivos "Archivos maestros" $MAEDIR
+	perl "$GRABAR" Iniciar_A I "TP S07508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 3"
+	listarArchivos "Librería del Sistema" "$CONFDIR"
+	listarArchivos "Ejecutables" "$BINDIR"
+	listarArchivos "Archivos maestros" "$MAEDIR"
 	
-	perl Grabar_L.pl Iniciar_A I "Directorio de arribo de archivos externos: $ARRIDIR"
-	perl Grabar_L.pl Iniciar_A I "Archivos externos aceptados: $ACEPDIR"
-	perl Grabar_L.pl Iniciar_A I "Archivos externos rechazados: $RECHDIR"
-	perl Grabar_L.pl Iniciar_A I "Reportes de salida: $REPODIR"
-	perl Grabar_L.pl Iniciar_A I "Archivos procesados: $PROCDIR"
-	perl Grabar_L.pl Iniciar_A I "Logs de auditoría del Sistema: $LOGDIR/<comando>.$LOGEXT"
-	perl Grabar_L.pl Iniciar_A I "Estado del Sistema: INICIALIZADO"
+	perl "$GRABAR" Iniciar_A I "Directorio de arribo de archivos externos: $ARRIDIR"
+	perl "$GRABAR" Iniciar_A I "Archivos externos aceptados: $ACEPDIR"
+	perl "$GRABAR" Iniciar_A I "Archivos externos rechazados: $RECHDIR"
+	perl "$GRABAR" Iniciar_A I "Reportes de salida: $REPODIR"
+	perl "$GRABAR" Iniciar_A I "Archivos procesados: $PROCDIR"
+	perl "$GRABAR" Iniciar_A I "Logs de auditoría del Sistema: $LOGDIR/<comando>.$LOGEXT"
+	perl "$GRABAR" Iniciar_A I "Estado del Sistema: INICIALIZADO"
 	
 	if [[ "$demonioCorriendo" -ne 0 ]]; then
-		perl Grabar_L.pl Iniciar_A I "Demonio corriendo bajo el no.: $ID_Recibir_A"
+		perl "$GRABAR" Iniciar_A I "Demonio corriendo bajo el no.: $ID_Recibir_A"
 	fi
 	return 0
 }
