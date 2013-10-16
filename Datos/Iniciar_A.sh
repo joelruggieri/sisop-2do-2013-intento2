@@ -201,17 +201,14 @@ function estanComandosInstalados {
 	if [[ $retorno -ne 0 ]]; then return 1; fi
 	
 	# Ejecutables Shell Script
-#	existeFicheroConPermisos f "$GRUPO/$BINDIR/Instalar_TP.sh" x
 	existeFicheroConPermisos f "$GRUPO/$BINDIR/Recibir_A.sh" x
 	existeFicheroConPermisos f "$GRUPO/$BINDIR/Reservar_A.sh" x
 	existeFicheroConPermisos f "$GRUPO/$BINDIR/Start_A.sh" x
 	existeFicheroConPermisos f "$GRUPO/$BINDIR/Stop_A.sh" x
 	
 	# Ejecutables PERL
-#	existeFicheroConPermisos f "$GRUPO/$BINDIR/diferenciaDias.pl" x
 	existeFicheroConPermisos f "$GRUPO/$BINDIR/Grabar_L.pl" x
 	existeFicheroConPermisos f "$GRUPO/$BINDIR/Imprimir_A.pl" x
-	existeFicheroConPermisos f "$GRUPO/$BINDIR/Imprimir.pl" x
 	existeFicheroConPermisos f "$GRUPO/$BINDIR/Mover_A.pl" x
 	
 	return 0
