@@ -115,14 +115,21 @@ sub leerOpciones{
 
 
 }
-sub imprimirAyuda {
-	print 'Ayuda'."\n";
-	print "-a Ayuda\n";
-	print "-i Generacion del listado de invitados a un evento\n";
-	print "-d Listado de disponibles\n";
-	print "-r Generar ranking\n";
-	print "-t Generar el listado de tickets a imprimir\n";
-	print "-w Opcion de grabacion esta opcion es combinable con las opciones anteriores\n";
+
+sub imprimirAyuda {	
+	print "\n\n*************************************************************"."\n";
+	print '*                                                           *'."\n";	
+	print '*	                    AYUDA                           *'."\n";
+	print '*                                                           *'."\n";
+	print '*************************************************************'."\n";
+	print "* COMANDOS:                                                 *\n";
+	print "*\t-a Ayuda                                            *\n";
+	print "*\t-i Generacion del listado de invitados a un evento  *\n";
+	print "*\t-d Listado de disponible                            *\n";
+	print "*\t-r Generar ranking                                  *\n";
+	print "*\t-t Generar el listado de tickets a imprimir         *\n";
+	print "*\t-w Opcion de grabacion esta opcion es combinable con*\n*\t   las opciones anteriores                          *\n";
+	print '*************************************************************'."\n\n\n";
 }
 
 sub existeReferenciaUsuario{
@@ -246,7 +253,7 @@ sub evaluarOpcionUsuarioListado{
 				exit 0;
 		}
 		if( $opcion > $#listaOpciones or $opcion < 0 and $opcion ne "-s"){		
-				$imprimir = "A ingresado mal la opcion -s para salir\n ";
+				$imprimir = "\n\tLa opcion que escojio no se encuentra en el listado\n\n";
 				imprimirAPantalla($imprimir);
 				&evaluarOpcionUsuarioListado();			
 		}
@@ -272,7 +279,7 @@ sub generarListaEventos{
 			if ($hashEventos{"$clave"} eq ""){
 				$idCombo = $data[7];
 				$hashEventos{"$clave"} = $idCombo;				
-				$imprimir = "$i- $data[1] $data[2] $data[3] $data[5]\n";
+				$imprimir = "Opcion: $i- $data[1] $data[2] $data[3] $data[5]\n";
 				imprimirAPantalla($imprimir);				
 				$listaOpciones[$i] = $clave;
 				$i++;			
@@ -294,7 +301,7 @@ sub imprimirInvitados{
 	#Recibe por parametro la funcion que realiza la impresion
 	my($impresora) = @_;
 	
-	my($linea) = "Invitados"."\n";
+	my($linea) = "\n*********  Listado de Invitados a un evento *********"."\n\n";
 	$impresora->($linea);
 	$imprimir = "Se listan los eventos candidatos\n";
 	$result = &generarListaEventos();
@@ -324,14 +331,14 @@ sub startArchivoInvitados{
 }
 
 sub evaluarOpcionUsuarioDisponibilidad{
-	$imprimir = "Ingrese una opcion:\n 1-Id Obra\n 2-Id Sala\n 3-Rango Id Obra\n 4-Rango Id Sala\n";
+	$imprimir = "Ingrese una opcion:\n\n\t 1- Id Obra\n\t 2- Id Sala\n\t 3- Rango Id Obra\n\t 4- Rango Id Sala\n";
 	&imprimirAPantalla($imprimir);
-	$imprimir = "Opcion: ";
+	$imprimir = "\nOpcion: ";
 	&imprimirAPantalla($imprimir);
 	$opcion = <STDIN>;
 	chomp($opcion);
 	if( $opcion > 4 or $opcion <= 0){		
-			$imprimir = "Opcion incorrecta..\n";
+			$imprimir = "Opcion incorrecta...\n";
 			&imprimirAPantalla($imprimir);
 			&evaluarOpcionUsuarioDisponibilidad();			
 	}	
@@ -361,9 +368,8 @@ sub procesarOpcionUsuario{
 	$listaOpcionD[$i]=$opcion;
 	if($opcion == 4 or $opcion == 3){
 		@rango = split("-",$opcion2);
-		print "@rango";
 		if($#rango != 1){
-			$imprimir = "Ingreso  mal la separacion en el rango\n";
+			$imprimir = "\n\tEl rango esta mal escrito por favor recuerde '-' para separarlo\n";
 			&imprimirAPantalla($imprimir);
 			&procesarOpcionUsuario();
 		}
@@ -412,7 +418,6 @@ sub leerArchivoCombos{
 	my ($result) = 0;
 
 	if(!open (COMBOS, "<$PROCDIR"."/".'combos.dis')){
-		print "\booo";
 		$result = "Error al leer el archivo de reservas";
 		
 	} else {		
@@ -425,7 +430,14 @@ sub leerArchivoCombos{
 	   close(COMBOS);	
 	}
 	if ($entro == 0 ){
-		$imprimir = "\nEl parametro ingresado es erroneo ingreselo nuevamente:\n";
+		my ($topc);
+		if($opcion == 1 or $opcion ==2){
+				$topc = "de la clave";
+		}
+		else{
+			 $topc = "del rango";
+		}		
+		$imprimir = "\nEl valor ingresado $topc no se existe\n\n";
 		&imprimirAPantalla($imprimir);
 		&procesarOpcionUsuario();
 		&leerArchivoCombos();
@@ -435,7 +447,7 @@ sub leerArchivoCombos{
 	
 sub imprimirDisponibilidad{
 	
-		
+	print "\n**************** Listado de Disponibilidad  ****************\n\n";	
 	&evaluarOpcionUsuarioDisponibilidad();
 	&procesarOpcionUsuario();
 	if( $aArchivo ){
@@ -464,7 +476,7 @@ sub startArchivoDisponibilidad{
 	
 	$direccion = "$REPODIR"."/"."$nombre.dis";
 	if ( not open (ARCHIVO,">$direccion") ){
-				print "Error al abrir en modo escritura $direccion";
+				print "Error al abrir en modo escritura $direccion\n";
 				exit 1;
 	}	
 	
@@ -478,10 +490,10 @@ sub imprimirRanking{
 	  my($nombreArchivo) = crearNombreArchivoRanking();
 	  if($nombreArchivo) {
 		if(! abrirArchivoCrear("$nombreArchivo")){
-		    $error = "Error al crear el archivo";	
+		    $error = "Error al crear el archivo\n";	
 		}
 	  } else {
-		$error = "No se pudo abrir el directorio de salida";
+		$error = "No se pudo abrir el directorio de salida\n";
 	  }
 	}
 	
