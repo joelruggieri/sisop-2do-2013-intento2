@@ -1,0 +1,28 @@
+17/10/2013 23:2:1-guest-TkMCZM-Instalar_TP-I-Inicio de Ejecucion 
+17/10/2013 23:2:1-guest-TkMCZM-Instalar_TP-I-Log del Comando Instalar_TP: conf/Instalar_TP.log 
+17/10/2013 23:2:1-guest-TkMCZM-Instalar_TP-I-Directorio de Configuración: /tmp/guest-TkMCZM/Escritorio/Instalador/conf 
+17/10/2013 23:2:1-guest-TkMCZM-Instalar_TP-I-El paquete no fue instalado previamente 
+17/10/2013 23:2:2-guest-TkMCZM-Instalar_TP-I-TP SO7508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 03 
+17/10/2013 23:2:2-guest-TkMCZM-Instalar_TP-I-Perl Version: 5 
+17/10/2013 23:2:3-guest-TkMCZM-Instalar_TP-I-Defina el directorio de instalacion de los ejecutables (/tmp/guest-TkMCZM/Escritorio/Instalador/bin): bin 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Defina el directorio de instalacion de los archivos maestros (/tmp/guest-TkMCZM/Escritorio/Instalador/mae): mae 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Defina el directorio de arribo de archivos externos (/tmp/guest-TkMCZM/Escritorio/Instalador/arribos): arribos 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Defina el directorio de grabacion de  los archivos externos aceptados (/tmp/guest-TkMCZM/Escritorio/Instalador/aceptados): aceptados 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Defina el directorio de grabacion de los archivos externos rechazados (/tmp/guest-TkMCZM/Escritorio/Instalador/rechazados): rechazados 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Defina el directorio de grabacion de los archivos procesados (/tmp/guest-TkMCZM/Escritorio/Instalador/procesados): procesados 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Defina el directorio de grabacion de los listados de salida (/tmp/guest-TkMCZM/Escritorio/Instalador/listados): listados 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Defina el directorio de logs (/tmp/guest-TkMCZM/Escritorio/Instalador/log): log 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-TP SO7508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 03 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Librería del Sistema: /conf/  
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Ejecutables: /bin/ 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Archivos maestros: /mae/ 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Directorio de arribo de archivos externos: /arribos/ 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Espacio mínimo libre para arribos: 100 Mb 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Archivos externos aceptados: /aceptados/ 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Archivos externos rechazados: /rechazados/ 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Archivos procesados: /procesados/ 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Reportes de salida: /listados/ 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Logs de auditoria del Sistema: log/<comando>.log 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Tamaño máximo para los archivos de log del sistema: 400 Kb 
+17/10/2013 23:2:4-guest-TkMCZM-Instalar_TP-I-Estado de la instalacion: LISTA 
+17/10/2013 23:2:5-guest-TkMCZM-Instalar_TP-I-Intalacion CONCLUIDA 
