@@ -1,6 +1,0 @@
-Ambos comandos se pueden iniciar con 1 o con 3 parametros, los dos ultimos son opcionales.
-1° parametro: nombre de script bash a ejecutar
-2° parametro: nombre del script que lo llama para poder loggear.
-3° parametro: nivel de log con el cual escribir en el archivo de log
-
-Valida que la inicialización del sistema se encuentre correctamente realizada.
