@@ -1,0 +1,18 @@
+- Inserte el dispositivo externo en su maquina y copie el “Instalador.tar”. 
+- Crear un carpeta de trabajo en el directorio que desee.
+- Descompima el archivo “Instalador.tar” en dicha carpeta.
+- Abra la consola e ir al carpeta creada.
+- En la carpeta se encontrara un archivo llamado “Instalar_TP.sh” y una carpeta llamada “Datos” donde se contendra todos los archivos ejectuables (.sh y .pl).
+- Inserte los permisos para poder ejecutar Instalar_TP.sh. ( Ejemplo: chmod 744 Instalar_TP.sh).
+- Ejecute el Instalar_TP.sh . ( Ejemplo: ./Instalar_TP.sh ).
+- Siga las instrucciones indicadas por el instalador, de acuerdo a lo que desea hacer.
+- Los archivos requeridos para la instalacion son los que se encuentran en la carpeta Datos.
+- Luego de instalar obtenemos:
+	Directorios de instalacion de los: ejecutables, maestros, archivos externos. 
+	Directorios de grabacion de los archivos: externos (acpetados, rechazados), archivos 	procesados, listados de salida.
+	Directorio de log.
+Estos directorios se crean en el path de la carpeta de trabajo creado en el segundo paso.
+
+- Una vez concluida la instalacion, moverse al directorio BINDIR. Ejecutar como proceso no hijo el comando Iniciar_A.sh, el cual solicitará la posible ejecucion del Recibir_A.sh.  En caso de aceptar se ejecutará y en caso de rechazarlo se lo podrá ejecutar manualmente a traves del comando Start_A.sh. El llamado proceso (demonio) se detendra ejecutando Stop_A.sh Recibir_a.sh (leer readme del Stop).
+- Una vez puesto en marcha el proceso, se podrá detener cualquier proceso interno ejecutando Stop_A.sh y el nombre del script que se desea detener. 
+Para ejecutar el imprimir, utilizar el Start_A. Ej: Star_A.sh Imprimir_A.pl (parámetros)
