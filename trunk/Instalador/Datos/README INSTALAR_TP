@@ -1,0 +1,6 @@
+Para invocar al instalar se debe abrir la consola y posicionarse en el directorio donde se encuentra el archivo instalador.
+Luego ejecutar con el siguiente comando: bash Instalar_TP.sh
+El comando se invoca si ningun parametro.
+Durante la instalacion se definen los directorios del programa si este se instala por primera vez.
+Si se instalo el paquete previamente pero por alguna razon se daño el mismo, se instalan nuevamente esos archivos.
+Deja asentado el proceso en la carpeta de configuracion.
