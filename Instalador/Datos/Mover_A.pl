@@ -61,7 +61,7 @@ sub moverArchivo{
 			$destino = $dir_dupli;
 			rename ("$dir_origen/$archivo","$dir_origen/$archivo_aux");
 			$tipoMsj="W";
-			$msj = "El archivo $archivo ya existe en el destino se movio a $destino/dup";
+			$msj = "El archivo $archivo ya existe en el destino se movio a $destino";
 			
 			$archivo = $archivo_aux;
 			
