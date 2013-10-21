@@ -37,6 +37,7 @@ do
 		then
 			perl "$MOVER" "$RUTA_ARCHIVO" "$RECHAZADOS" Recibir_A
 			perl "$GRABAR" Recibir_A I "El archivo $archivo fue rechazado por ser invalido"
+			echo "El archivo $archivo fue rechazado por ser invalido"
 		elif [[ $TIPO_TEXTO -eq 1 && $RESERVA_BIEN_FORMADO -eq 1 ]]
 		then
 			id=`echo $archivo | cut -d "-" -f 1`
@@ -48,9 +49,11 @@ do
 				then
 					perl "$MOVER" "$RUTA_ARCHIVO" "$ACEPTADOS" Recibir_A
 					perl "$GRABAR" Recibir_A I "El archivo $archivo de reservas ha sido aceptado"
+					echo "El archivo $archivo de reservas ha sido aceptado"
 				else
 					perl "$MOVER" "$RUTA_ARCHIVO" "$RECHAZADOS" Recibir_A
 					perl "$GRABAR" Recibir_A I "El archivo $archivo fue rechazado por par id de Sala-correo invalido/inexistente"
+					echo "El archivo $archivo fue rechazado por par id de Sala-correo invalido/inexistente"
 				fi
 			elif [ `expr $id % 2` -eq 1 ]
 			then
@@ -60,10 +63,12 @@ do
 				then
 					perl "$MOVER" "$RUTA_ARCHIVO" "$ACEPTADOS" Recibir_A
 					perl "$GRABAR" Recibir_A I "El archivo $archivo de reservas ha sido aceptado"
+					echo "El archivo $archivo de reservas ha sido aceptado"
 				else
 					
 					perl "$MOVER" "$RUTA_ARCHIVO" "$RECHAZADOS" Recibir_A
 					perl "$GRABAR" Recibir_A I "El archivo $archivo fue rechazado por par id de Obra-correo invalido/inexistente"
+					echo "El archivo $archivo fue rechazado por par id de Obra-correo invalido/inexistente"
 				fi
 			 
 			fi
@@ -71,6 +76,7 @@ do
 		then
 			perl "$MOVER" "$RUTA_ARCHIVO" "$REPOSITORIO" Recibir_A
 			perl "$GRABAR" Recibir_A I "El archivo de invitados  $archivo fue aceptado y movido a $REPOSITORIO"
+			echo "El archivo de invitados  $archivo fue aceptado y movido a $REPOSITORIO"
 		fi
 		
  	
