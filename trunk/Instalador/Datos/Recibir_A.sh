@@ -14,7 +14,8 @@ REPOSITORIO="$GRUPO"/"$REPODIR"
 
 GRABAR="$GRUPO"/"$BINDIR"/"Grabar_L.pl"
 MOVER="$GRUPO"/"$BINDIR"/"Mover_A.pl"
-
+SAVEIFS=$IFS
+IFS=$(echo -en "\n\b")
 while (true)
 do
 	direccionActual=`pwd`
@@ -31,14 +32,15 @@ do
 		INVITADOS_BIEN_FORMADO=` echo $archivo | grep -c '^[^- ]*\.inv$'`
 		RESERVA_BIEN_FORMADO=`echo $archivo | grep -c '^[0-9]\+-[^-]*-[^- ]*$'`
 		TIPO_TEXTO=`echo $TIPO_DE_TEXTO | grep -c 'text'`
+		TEXTO_VACIO=`echo $TIPO_DE_TEXTO | grep -c 'empty'`
 		LANG_GUARDAR=$LANG
 		LANG=C
-		if [[ ($TIPO_TEXTO -eq 0) || ($RESERVA_BIEN_FORMADO -eq 0 && $INVITADOS_BIEN_FORMADO -eq 0) ]] 
+		if [[ ($TIPO_TEXTO -eq 0 && $TEXTO_VACIO -eq 0) || ($RESERVA_BIEN_FORMADO -eq 0 && $INVITADOS_BIEN_FORMADO -eq 0) ]] 
 		then
 			perl "$MOVER" "$RUTA_ARCHIVO" "$RECHAZADOS" Recibir_A
 			perl "$GRABAR" Recibir_A I "El archivo $archivo fue rechazado por ser invalido"
 			echo "El archivo $archivo fue rechazado por ser invalido"
-		elif [[ $TIPO_TEXTO -eq 1 && $RESERVA_BIEN_FORMADO -eq 1 ]]
+		elif [[ ($TIPO_TEXTO -eq 1 || $TEXTO_VACIO -eq 1) && $RESERVA_BIEN_FORMADO -eq 1 ]]
 		then
 			id=`echo $archivo | cut -d "-" -f 1`
 			correo=`echo $archivo | cut -d "-" -f 2`
@@ -72,7 +74,7 @@ do
 				fi
 			 
 			fi
-		elif [[ $TIPO_TEXTO -eq 1 && $INVITADOS_BIEN_FORMADO -eq 1 ]]	
+		elif [[ ($TIPO_TEXTO -eq 1 || $TEXTO_VACIO -eq 1) && $INVITADOS_BIEN_FORMADO -eq 1 ]]	
 		then
 			perl "$MOVER" "$RUTA_ARCHIVO" "$REPOSITORIO" Recibir_A
 			perl "$GRABAR" Recibir_A I "El archivo de invitados  $archivo fue aceptado y movido a $REPOSITORIO"
@@ -102,3 +104,4 @@ do
 	sleep $TIEMPO
 	let NUMERO_DE_CICLO=NUMERO_DE_CICLO+1
 done
+IFS=$SAVEIFS
