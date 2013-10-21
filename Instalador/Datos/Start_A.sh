@@ -76,13 +76,17 @@ function main {
 			fi
 			#echo "Arrancado el comando"
 			if [ $params -gt 1 ] && [ "$archivo" != "Imprimir_A.pl" ]; then
-				perl "$GRABAR" $2 $3 "Se ejecuta el comando $1"
+				perl "$GRABAR" $2 $3 
 			fi
+				echo "Se ejecuta el comando $1"
+
 								
 		 else
 			if [ $params -gt 1 ] && [ "$archivo" != "Imprimir_A.pl" ]; then
 				perl "$GRABAR" $2 $3 "El comando $1 ya se encuentra corriendo"
-			fi		
+			fi
+				echo "El comando $1 ya se encuentra corriendo"
+		
 		 fi
 	 fi
  fi

@@ -13,22 +13,25 @@
 	 if  [ ! -f "$direccion" ] ; then 
 		if [ $params -gt 1 ]; then
 			perl "$GRABAR" $2 $3 "No se encontro el comando '$1'"
-		fi	
+		fi
+			echo "No se encontro el comando '$1'"	
+
 	 	#echo "Nombre de comando invalido"
 	 else
 		 var=$(ps -o pid -C $1 | sed "2q;d")
 		 if  [ "$var" == "" ]; then
 			if [ $params -gt 1 ]; then
-				perl "$GRABAR" $2 $3 "El comando '$1' no se encuentra corriendo aun"
+				perl "$GRABAR" $2 $3 "El comando $1 no se encuentra corriendo aun"
 			fi	
+			echo "El comando $1 no se encuentra corriendo aun"	
 		    	#echo "El comando '$1' no se encuentra corriendo aun"
 		 else
 			kill -9 $var > /dev/null 
 			#echo "Lo hice bosta"
 			if [ $params -gt 1 ]; then
-				perl "$GRABAR" $2 $3 "El comando '$1' ha sido parado"
-			fi	
-
+				perl "$GRABAR" $2 $3 "El comando $1 ha sido parado"
+			fi		
+			echo "El comando $1 ha sido parado"	
 
 		 fi
 	 fi
