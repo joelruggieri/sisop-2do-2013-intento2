@@ -696,7 +696,8 @@ sub procesarRegistroCombo {
 		exit 1;
 	} else {
 		@array = <RESERVAS>;
-		
+		$linea="Inicio de listado\n";
+		$impresora->($linea);	
 		# Asigna al arreglo todos los registros del archivo.
 		foreach (@array){
 			$i=index($_,"$comboID"); # busca el string “print”
@@ -704,6 +705,8 @@ sub procesarRegistroCombo {
 				procesarRegistroDelCombo("$_", $impresora);
 			}
 		}
+		$linea="Fin de listado\n";
+		$impresora->($linea);
 	}
 }
 
