@@ -13,8 +13,8 @@
 	-- Directorio de log.
 Estos directorios se crean en el path de la carpeta de trabajo indicada en el segundo paso.
 - Una vez concluida la instalacion, moverse al directorio BINDIR nuevamente con el comando cd. 
-- Ejecutar como proceso no hijo el comando Iniciar_A.sh para esto tipear el siguiente comando en la consola ". ./Iniciar_A.sh". 
-Iniciar_A solicitará la posible ejecucion del Recibir_A.sh.  En caso de aceptar se ejecutará el mismoy en caso de rechazarlo se lo podrá ejecutar manualmente a traves del comando Start_A.sh.
+- Ejecutar como proceso no hijo el comando Iniciar_A.sh, para esto tipear el siguiente comando en la consola ". ./Iniciar_A.sh". 
+Iniciar_A solicitará la posible ejecucion del Recibir_A.sh.  En caso de aceptar se ejecutará el mismo en caso de rechazarlo se lo podrá ejecutar manualmente a traves del comando Start_A.sh.
 El llamado proceso (demonio) se detendra ejecutando Stop_A.sh Recibir_a.sh (leer readme del Stop).
 - Una vez puesto en marcha el proceso, se podrá detener cualquier proceso interno ejecutando "Stop_A.sh nombreproceso" que se desea detener, en caso de querer reanudarlo nuevamente utilizar el comando: "Start_A.sh nombreproceso". 
 Para ejecutar el imprimir, utilizar el Start_A. Ej: Star_A.sh Imprimir_A.pl (parámetros).
