@@ -6,9 +6,9 @@ use Data::Dumper;
 $REPODIR= $ENV{'GRUPO'}."/".$ENV{'REPODIR'};
 $PROCDIR = $ENV{'GRUPO'}."/".$ENV{'PROCDIR'};
 $MAEDIR = $ENV{'GRUPO'}."/".$ENV{'MAEDIR'};
-#$REPODIR= "/home/nicolas/SistemasOperativos/Practica/";
-#$PROCDIR= "/home/nicolas/SistemasOperativos/Practica/";
-#$MAEDIR= "/home/nicolas/SistemasOperativos/Practica/";
+#$REPODIR= "/home/nicolas/Escritorio";
+#$PROCDIR= "/home/nicolas/Escritorio";
+#$MAEDIR= "/home/nicolas/Escritorio";
 
 #$PROCDIR = "/home/administrador/Escritorio/Repo/procesados";
 #$REPODIR = "/home/administrador/Escritorio/Repo/repo";
@@ -169,7 +169,7 @@ sub procesarOpcionDeUsuario{
 	my @evento = split("-",$listaOpciones[$opcion]);
 	%hashRef;
 	$butacas = 0;
-	print "@evento\n";	
+	print "\nEl evento que escojio es:\n@evento\n\n";	
 	if(!open (RESERVAS, "<$PROCDIR"."/".'reservas.ok')){
 		$result = "Error al leer el archivo de reservas";		
 	} 
@@ -272,7 +272,7 @@ sub generarListaEventos{
 		$result = "Error al leer el archivo de reservas";
 		
 	} else {
-		print "as\n";
+		
 		while ($linea=<RESERVAS>){
 			@data = split(";", $linea);
 			my $clave = "$data[1]-$data[2]-$data[3]-$data[5]";
@@ -303,11 +303,11 @@ sub imprimirInvitados{
 	
 	my($linea) = "\n*********  Listado de Invitados a un evento *********"."\n\n";
 	$impresora->($linea);
-	$imprimir = "Se listan los eventos candidatos\n";
+	print "Se listan los eventos candidatos\n";
 	$result = &generarListaEventos();
 	&evaluarOpcionUsuarioListado();	
 	$idCombo = $hashEventos{$listaOpciones[$opcion]};
-	imprimirAPantalla($idCombo);
+	#imprimirAPantalla($idCombo);
 	if( $aArchivo ){
 		startArchivoInvitados();
 	}
@@ -378,7 +378,7 @@ sub procesarOpcionUsuario{
 
 
 sub recorrerArchivoCombosSegunOpcion{	
-	
+	%hashOrdenado;
 	if( $opcion == 1){
 		if($data[1] == $opcion2){
 			$entro = 1;
@@ -399,7 +399,9 @@ sub recorrerArchivoCombosSegunOpcion{
 		if($data[1] >= $min and $data[1] <= $max){
 			$entro = 1;
 			$imprimir = "$data[0]-$data[1]-$data[2]-$data[3]-$data[4]-$data[5]-$data[6]\n";
-			&imprimirAArchivo($imprimir);
+			$clave = "$data[1]-data[0]";
+			$hashOrdenado{$clave}=$imprimir;
+			#&imprimirAArchivo($imprimir);
 		}					
 	}
 	if($opcion == 4){
@@ -408,7 +410,9 @@ sub recorrerArchivoCombosSegunOpcion{
 		if($data[4] >= $min and $data[4] <= $max){
 			$entro = 1;
 			$imprimir = "$data[0]-$data[1]-$data[2]-$data[3]-$data[4]-$data[5]-$data[6]\n";
-			&imprimirAArchivo($imprimir);
+			$clave = "$data[4]-data[0]";
+			$hashOrdenado{$clave}=$imprimir;
+			#&imprimirAArchivo($imprimir);
 		}			
 	}
 	
@@ -416,7 +420,7 @@ sub recorrerArchivoCombosSegunOpcion{
 sub leerArchivoCombos{
 	$entro = 0;
 	my ($result) = 0;
-
+	print "\n";
 	if(!open (COMBOS, "<$PROCDIR"."/".'combos.dis')){
 		$result = "Error al leer el archivo de reservas";
 		
@@ -432,16 +436,21 @@ sub leerArchivoCombos{
 	if ($entro == 0 ){
 		my ($topc);
 		if($opcion == 1 or $opcion ==2){
-				$topc = "de la clave";
+				$topc = "del ID";
 		}
 		else{
 			 $topc = "del rango";
 		}		
-		$imprimir = "\nEl valor ingresado $topc no se existe\n\n";
+		$imprimir = "\nEl valor ingresado $topc no existe\n\n";
 		&imprimirAPantalla($imprimir);
 		&procesarOpcionUsuario();
 		&leerArchivoCombos();
 	}
+	
+	for $key ( sort {$a<=>$b} keys %hashOrdenado) {
+           print "$hashOrdenado{$key}\n";
+	}
+		
 	$return = $result;
 }	
 	
