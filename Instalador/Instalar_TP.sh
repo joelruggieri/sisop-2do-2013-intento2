@@ -54,6 +54,14 @@ function Obtener_path {
 	else
 		Resultadoparcial=$Resultadoparcial
 	fi
+	
+	Resultadoparcial=`echo "$Resultadoparcial" | grep '^[^=]*$'`
+	if [[ "$Resultadoparcial" == "" ]]; then
+		perl "$GRABAR" Instalar_TP E "El valor ingresado para $1 es inválido, se tomará el predeterminado."
+		echo "Error: El valor ingresado para $1 es inválido, se tomará el predeterminado."
+		Resultadoparcial=$3	
+	fi
+	
 	perl "$GRABAR" Instalar_TP I  "$2 $Resultadoparcial" 
     eval $Resultado="'$Resultadoparcial'"
 }
@@ -67,6 +75,15 @@ function Obtener_valor {
     if [[ "$Resultadoparcial" == "" ]]; then
 		Resultadoparcial=$3
 	fi
+	
+	Resultadoparcial=`echo "$Resultadoparcial" | grep '^[^=]*$'`
+	if [[ "$Resultadoparcial" == "" ]]; then
+		perl "$GRABAR" Instalar_TP E "El valor ingresado para $1 es inválido, se tomará el predeterminado."
+		echo "Error: El valor ingresado para $1 es inválido, se tomará el predeterminado."
+		Resultadoparcial=$3	
+	fi
+	
+	perl "$GRABAR" Instalar_TP I  "$2 $Resultadoparcial" 
     eval $Resultado="'$Resultadoparcial'"
 }
 function Pregunta_sn {
@@ -92,6 +109,16 @@ function Obtener_numero {
     local  Resultadoparcial
     echo $2
     read Resultadoparcial
+    
+    Resultadoparcial=`echo "$Resultadoparcial" | sed 's/[0-9]*[^0-9]\+.*/ERROR/'`
+	if [[ "$Resultadoparcial" == "ERROR" ]]; then
+		perl "$GRABAR" Instalar_TP E "El número ingresado para $1 es inválido, se tomará el predeterminado."
+		echo "Error: El número ingresado para $1 es inválido, se tomará el predeterminado."
+		Resultadoparcial=$4
+		eval $Resultado="'$Resultadoparcial'"
+		return 0
+	fi
+    
     if [[ $Resultadoparcial -lt $5 ]]; then
 		Resultadoparcial=$4
 	fi
@@ -101,10 +128,16 @@ function Obtener_numero {
 # Rescata el valor que corresponde a la variable pasada por parametro
 # existente en el archivo de configuracion
 function conseguirVariable { # $1: Variable
+	declare local vSalida=`grep '^'$1'=[^=]*=[^=]*=[^=]*$' "$MAINDIR/$CONFDIR/Instalar_TP.conf" | sed 's@^[^=]*=\([^=]*\)=.*@\1@'`
 	
-	declare local vSalida=`grep '^'$1'' "$MAINDIR/$CONFDIR/Instalar_TP.conf" | sed 's@^[^=]*=\([^=]*\)=[^=]*=[^=]*$@\1@'`
+	if [[ ( "$1" == DATASIZE ) || ( "$1" == LOGSIZE ) ]]; then
+		vSalida=`echo "$vSalida" | sed 's@[0-9]*[^0-9]\+.*@@'`
+	fi
+	
 	if [[ "$vSalida" == "" ]]; then
-		perl "$GRABAR" Instalar_TP E "Error: registro mal formado" 
+		perl "$GRABAR" Instalar_TP E "Error: registro $1 inexistente o mal formado."
+		echo "Error: registro $1 inexistente o mal formado en el archivo de configuración."
+		echo "Por favor, vuelva a instalar el sistema siguiendo el README desde el comienzo."
 		exit 1
 	fi
 	eval "$1=\"$vSalida\""
@@ -214,26 +247,41 @@ function Verificar_faltantes {
 	conseguirVariable LOGSIZE
 	#LISTO DIRECTORIOS.
 	echo
+	
 	echo "/$BINDIR/ Archivos:"
-	ls "$BINDIR"
-	Archivosbin=`ls "$BINDIR" `
 	perl "$GRABAR" Instalar_TP I  "/$BINDIR/ Archivos:" 
-	perl "$GRABAR" Instalar_TP I "$Archivosbin"
+	if [[ -d "$MAINDIR/$BINDIR" ]]; then
+		ls "$BINDIR"
+		Archivosbin=`ls "$BINDIR" `
+		perl "$GRABAR" Instalar_TP I "$Archivosbin"
+	else
+		perl "$GRABAR" Instalar_TP E "Directorio $BINDIR inexistente"
+		echo "Directorio $BINDIR inexistente"
+	fi
 	echo
 	echo "/$MAEDIR/ Archivos:"
-	Archivosmae=`ls "$MAEDIR" `
-	perl "$GRABAR" Instalar_TP I "$Archivosmae"
-	perl "$GRABAR" Instalar_TP I "/$MAEDIR/ Archivos:"
-	ls "$MAEDIR"
+	perl "$GRABAR" Instalar_TP I  "/$MAEDIR/ Archivos:" 
+	if [[ -d "$MAINDIR/$MAEDIR" ]]; then
+		ls "$MAEDIR"
+		Archivosmae=`ls "$MAEDIR" `
+		perl "$GRABAR" Instalar_TP I "$Archivosmae"
+	else
+		perl "$GRABAR" Instalar_TP E "Directorio $MAEDIR inexistente"
+		echo "Directorio $MAEDIR inexistente"
+	fi
 	echo
 	echo "/$CONFDIR/ Archivos:"
-	ls "$CONFDIR"
-	Archivosconf=`ls "$CONFDIR"`
-	perl "$GRABAR" Instalar_TP I "/$CONFDIR/ Archivos:"
-	perl "$GRABAR" Instalar_TP I "$Archivosconf"
-
+	perl "$GRABAR" Instalar_TP I  "/$CONFDIR/ Archivos:" 
+	if [[ -d "$MAINDIR/$CONFDIR" ]]; then
+		ls "$CONFDIR"
+		Archivosconf=`ls "$CONFDIR" `
+		perl "$GRABAR" Instalar_TP I "$Archivosconf"
+	else
+		perl "$GRABAR" Instalar_TP E "Directorio $CONFDIR inexistente"
+		echo "Directorio $CONFDIR inexistente"
+	fi
 	echo
- 		
+	
 	#imprimo faltantes
 	echo "Faltan: $Faltantes"
 	if [[ "$Faltantes" == "" ]]; then
@@ -287,8 +335,9 @@ Estructura de archivos:"
 		echo "El paquete no fue instalado previamente"
 		perl "$GRABAR" Instalar_TP I "El paquete no fue instalado previamente" 
 		# terminos y condiciones
-		Pregunta_sn "TP SO7508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 03 \n A T E N C I O N: Al instalar TP SO7508 Segundo Cuatrimestre 2013 UD. expresa aceptar los términos y Condiciones del \"ACUERDO DE LICENCIA DE SOFTWARE\" incluido en este paquete. 
-	Acepta? Si – No"
+		echo "TP SO7508 Segundo Cuatrimestre 2013. Tema A Copyright © Grupo 03"
+		echo "A T E N C I O N: Al instalar TP SO7508 Segundo Cuatrimestre 2013 UD. expresa aceptar los términos y Condiciones del \"ACUERDO DE LICENCIA DE SOFTWARE\" incluido en este paquete."
+		Pregunta_sn "Acepta? Si – No"
 		if [ "$?" == 0 ]; then
 			exit 0
 		fi
