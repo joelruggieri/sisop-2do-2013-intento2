@@ -1,7 +1,15 @@
-- Inserte el dispositivo externo en su maquina y copie el “Instalador.tar”. 
+Observacion General:
+para ejecutar los comandos debe tipear los mismos y luego presionar la tecla enter para ejecutarlos.
+---------------------------------------------------------------------------README
+- Inserte el dispositivo externo en su maquina, anote la ruta de este directorio al que nos referimos como dirOrigen. 
 - Crear un carpeta de trabajo en el directorio que desee instalar el programa (en este directorio se copiaran todos los archivos necesarios para el correcto funcionamiento del mismo, procure una vez instalado no modificar ningun archivo o carpeta de este directorio).
-- Descompima el archivo “Instalador.tar” en dicha carpeta.
+Para esto abra una terminar con ctrl + t y ejecute el comando "cd ruta" siendo ruta el directorio donde se quiere crear la carpeta. Luego escriba el comando "mkdir nombrecarpeta" siendo nombre de la carpeta el nombre deseado, nos referimos a todo el directorio como dirDestino.
+- Copie el instalador en la carpeta elegida:
+ejecute el siguiente comando "cp dirOrigen/Instalador.tar.gz dirDestino"
 - Abra la consola y dirijase a traves del comando cd a la carpeta creada (si no sabe utilizar este comando, escriba en la consola: "man cd" para recibir ayuda ).
+- Descompima el archivo “Instalador.tar.gz” en dicha carpeta.
+ejecute el comando "gzip -d Instalador.tar.gz"
+luego ejecute el comando "tar -xvf Intalador.tar".
 - En la carpeta se encontrara un archivo llamado “Instalar_TP.sh” y una carpeta llamada “Datos” donde se contendra todos los archivos ejectuables (.sh y .pl).
 - Modifique los permisos para poder ejecutar "Instalar_TP.sh" correctamente. ( Ejemplo: chmod 744 Instalar_TP.sh).
 - Ejecute el Instalar_TP.sh ingresando en la consola: "./Instalar_TP.sh".
