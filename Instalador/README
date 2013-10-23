@@ -3,7 +3,7 @@ para ejecutar los comandos debe tipear los mismos y luego presionar la tecla ent
 ---------------------------------------------------------------------------README
 - Inserte el dispositivo externo en su maquina, anote la ruta de este directorio al que nos referimos como dirOrigen. 
 - Crear un carpeta de trabajo en el directorio que desee instalar el programa (en este directorio se copiaran todos los archivos necesarios para el correcto funcionamiento del mismo, procure una vez instalado no modificar ningun archivo o carpeta de este directorio).
-Para esto abra una terminar con ctrl + t y ejecute el comando "cd ruta" siendo ruta el directorio donde se quiere crear la carpeta. Luego escriba el comando "mkdir nombrecarpeta" siendo nombre de la carpeta el nombre deseado, nos referimos a todo el directorio como dirDestino.
+Para esto abra una terminar con ctrl alt t y ejecute el comando "cd ruta" siendo la ruta del directorio donde se quiere crear la carpeta. Luego escriba el comando "mkdir nombrecarpeta" siendo nombre de la carpeta el nombre deseado, anote la ruta de esta carpeta al que nos referimos  como dirDestino.
 - Copie el instalador en la carpeta elegida:
 ejecute el siguiente comando "cp dirOrigen/Instalador.tar.gz dirDestino"
 - Abra la consola y dirijase a traves del comando cd a la carpeta creada (si no sabe utilizar este comando, escriba en la consola: "man cd" para recibir ayuda ).
@@ -17,7 +17,7 @@ luego ejecute el comando "tar -xvf Intalador.tar".
 - Los archivos requeridos para la instalacion son los que se encuentran en la carpeta Datos, usted no debe manipular la misma antes o durante la instalacion.
 - Luego de ejecutar por completo el instalador usted obtendra:
 	-- Directorios de instalacion de los: ejecutables, maestros, archivos externos. 
-	-- Directorios de grabacion de los archivos: externos (acpetados, rechazados), archivos 		  procesados, listados de salida.
+	-- Directorios de grabacion de los archivos: externos (acpetados, rechazados), archivos procesados, listados de salida.
 	-- Directorio de log.
 Estos directorios se crean en el path de la carpeta de trabajo indicada en el segundo paso.
 - Una vez concluida la instalacion, moverse al directorio BINDIR nuevamente con el comando cd. 
