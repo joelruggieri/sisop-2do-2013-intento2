@@ -1,9 +1,9 @@
 Observacion General:
 para ejecutar los comandos debe tipear los mismos y luego presionar la tecla enter para ejecutarlos.
 ---------------------------------------------------------------------------README
-- Inserte el dispositivo externo en su maquina, anote la ruta de este directorio al que nos referimos como dirOrigen. 
+- Inserte el dispositivo externo en su maquina, anote la ruta de este directorio a la que nos referimos como dirOrigen. 
 - Crear un carpeta de trabajo en el directorio que desee instalar el programa (en este directorio se copiaran todos los archivos necesarios para el correcto funcionamiento del mismo, procure una vez instalado no modificar ningun archivo o carpeta de este directorio).
-Para esto abra una terminar con ctrl alt t y ejecute el comando "cd ruta" siendo la ruta del directorio donde se quiere crear la carpeta. Luego escriba el comando "mkdir nombrecarpeta" siendo nombre de la carpeta el nombre deseado, anote la ruta de esta carpeta al que nos referimos  como dirDestino.
+Para esto abra una terminar con ctrl alt t y ejecute el comando "cd ruta" siendo la ruta del directorio donde se quiere crear la carpeta. Luego escriba el comando "mkdir nombrecarpeta" siendo nombrecarpeta el nombre elegido para la carpeta, anote la ruta de esta carpeta a la que nos referimos  como dirDestino.
 - Copie el instalador en la carpeta elegida:
 ejecute el siguiente comando "cp dirOrigen/Instalador.tar.gz dirDestino"
 - Abra la consola y dirijase a traves del comando cd a la carpeta creada (si no sabe utilizar este comando, escriba en la consola: "man cd" para recibir ayuda ).
