@@ -9,7 +9,7 @@ ejecute el siguiente comando "cp dirOrigen/Instalador.tar.gz dirDestino"
 - Abra la consola y dirijase a traves del comando cd a la carpeta creada (si no sabe utilizar este comando, escriba en la consola: "man cd" para recibir ayuda ).
 - Descompima el archivo “Instalador.tar.gz” en dicha carpeta.
 ejecute el comando "gzip -d Instalador.tar.gz"
-luego ejecute el comando "tar -xvf Intalador.tar".
+luego ejecute el comando "tar -xvf Instalador.tar".
 - En la carpeta se encontrara un archivo llamado “Instalar_TP.sh” y una carpeta llamada “Datos” donde se contendra todos los archivos ejectuables (.sh y .pl).
 - Modifique los permisos para poder ejecutar "Instalar_TP.sh" correctamente. ( Ejemplo: chmod 744 Instalar_TP.sh).
 - Ejecute el Instalar_TP.sh ingresando en la consola: "./Instalar_TP.sh".
